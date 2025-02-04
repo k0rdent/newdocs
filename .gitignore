@@ -2,6 +2,10 @@
 venv/
 .venv/
 
+# Ignore extension folders from .vscode
+
+.vscode
+
 # Ignore MkDocs build output
 site/
 
