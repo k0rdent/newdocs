@@ -251,7 +251,7 @@ kubectl apply -f aws-cluster-identity.yaml  -n kcm-system
 
 ## Create the k0rdent Cluster Manager credential object
 
-Now we create the k0rdent Cluster Manager credential object. As in prior steps, create a YAML file called `aws-cluster-identity-cred.yaml':
+Now we create the k0rdent Cluster Manager credential object. As in prior steps, create a YAML file called `aws-cluster-identity-cred.yaml`:
 
 ```yaml
 apiVersion: k0rdent.mirantis.com/v1alpha1
@@ -273,6 +273,30 @@ Now apply this YAML to your management cluster:
 
 ```shell
 kubectl apply -f aws-cluster-identity-cred.yaml -n kcm-system
+```
+
+## Create the k0rdent Cluster Identity resource template ConfigMap
+
+Now we create the k0rdent Cluster Identity resource template `ConfigMap`. As in prior steps, create a YAML file called `aws-cluster-identity-resource-template.yaml`:
+
+```yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: aws-cluster-identity-resource-template
+  namespace: kcm-system
+  labels:
+    k0rdent.mirantis.com/component: "kcm"
+  annotations:
+    projectsveltos.io/template: "true"
+```
+
+Note that `ConfigMap` is empty, this is expected, we don't need to template any object inside child cluster(s), but we can use that object in the future if need arises.
+
+Now apply this YAML to your management cluster:
+
+```shell
+kubectl apply -f aws-cluster-identity-resource-template.yaml -n kcm-system
 ```
 
 ## List available cluster templates

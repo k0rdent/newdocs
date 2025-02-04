@@ -205,7 +205,10 @@ spec:
 For AKS clusters, the `.spec.identityRef.kind` must be set to `Secret`, and `.spec.name` must match
 `.metadata.name` of the `Secret` object.
 
+Note: for AKS we also need to create Cluster Identity resource template ConfigMap
+
 ```yaml
+---
 apiVersion: k0rdent.mirantis.com/v1alpha1
 kind: Credential
 metadata:
@@ -217,6 +220,16 @@ spec:
     kind: Secret
     name: azure-aks-credential
     namespace: kcm-system
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: azure-aks-credential-resource-template
+  namespace: kcm-system
+  labels:
+    k0rdent.mirantis.com/component: "kcm"
+  annotations:
+    projectsveltos.io/template: "true"
 ```
 -->
 Apply the YAML to your cluster:
