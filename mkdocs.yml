@@ -98,6 +98,8 @@ nav:
     - Extended management configuration: appendix-extend-mgmt.md
     - Understanding the dry run: appendix-dryrun.md
     - Cloud provider credentials management in CAPI: appendix-providers.md
+  - Contributing:
+    - k0rdent documentation contributor's guide: k0rdent-documentation-contributors-guide.md
 
 markdown_extensions:
   - callouts
