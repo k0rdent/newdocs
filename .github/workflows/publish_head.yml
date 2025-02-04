@@ -1,0 +1,38 @@
+name: Publish docs to head
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy-head:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Configure git
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email github-actions[bot]@users.noreply.github.com
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install mkdocs-material and mike
+        run: |
+          python -m pip install --upgrade pip
+          pip install --disable-pip-version-check -r requirements.txt
+
+      - name: Deploy HEAD
+        run: |
+          # Fetch and update gh-pages branch
+          git fetch origin gh-pages
+          git checkout gh-pages
+          git pull origin gh-pages --rebase
+          # Go back to main
+          git checkout main
+          # Deploy as HEAD
+          mike deploy head --push
