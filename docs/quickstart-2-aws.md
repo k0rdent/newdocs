@@ -77,6 +77,14 @@ You'll see something like what's shown below. You should save this data securely
 }
 ```
 
+## Configure AWS IAM for k0rdent
+
+Before k0rdent CAPI can manage resources on AWS, you need to use `clusterawsadm` to create a bootstrap CloudFormation stack with additional IAM policies and a service account. You do this under the administrative account credentials you earlier exported to the management node environment:
+
+```shell
+clusterawsadm bootstrap iam create-cloudformation-stack
+```
+
 ## Attach IAM policies to the k0rdent user
 
 Next, we'll attach appropriate policies to the k0rdent user. These are:
@@ -186,14 +194,6 @@ You should see something like this. It's important to save these credentials sec
 > [instruction](known-issues-eks.md#eks-machines-are-not-created-controlplaneisstable-preflight-check-failed)
 > to apply the workaround.
 -->
-
-## Configure AWS IAM for k0rdent
-
-Before k0rdent CAPI can manage resources on AWS, you need to use `clusterawsadm` to create a bootstrap CloudFormation stack with additional IAM policies and a service account. You do this under the administrative account credentials you earlier exported to the management node environment:
-
-```shell
-clusterawsadm bootstrap iam create-cloudformation-stack
-```
 
 ## Create IAM credentials secret on the management cluster
 
