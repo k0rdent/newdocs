@@ -8,13 +8,13 @@ This page gives technical guidance for contributing to k0rdent documentation. Th
 
 k0rdent documentation is built from Markdown (.md) documents using the [MkDocs](https://www.mkdocs.org/) static site generator with the [Material](https://squidfunk.github.io/mkdocs-material/) theme. We use several MkDocs extensions and plugins for rendering glossary items, admonitions (e.g., Note, Tip, Warning, etc.) and other special kinds of content.
 
-Below you'll find [instructions for setting up MkDocs locally](#install-mkdocs-to-serve-k0rdent-docs-locally) to dynamically build and serve the k0rdent documentation from your local clone of the docs repository. This is handy for reviewing the rendered look and feel of changes and additions before filing a pull request.
+Below you'll find [instructions for setting up MkDocs locally](#install-mkdocs-to-view-k0rdent-docs-locally) to dynamically build and serve the k0rdent documentation from your local clone of the docs repository. This is handy for reviewing the rendered look and feel of changes and additions before filing a pull request.
 
 ## How k0rdent docs are written
 
 k0rdent documentation is written mostly in [CommonMark](https://commonmark.org/) as adopted by GitHub, with a few CommonMark-compatible markdown enhancements used by MkDocs, the Material theme, and extensions (see below) to enable more-readable rendering of code, glossary items, images, and admonitions (e.g., NOTE:, TIP:, WARNING:, etc.). The [k0rdent documentation style guide](k0rdent-documentation-style-guide.md) details our markdown style, along with those extensions.
 
-## How k0rdent/docs is structured
+## How k0rdent docs is structured
 
 The structure of k0rdent/docs is shown below:
 

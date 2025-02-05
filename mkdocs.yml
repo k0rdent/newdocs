@@ -100,6 +100,7 @@ nav:
     - Cloud provider credentials management in CAPI: appendix-providers.md
   - Contributing:
     - k0rdent documentation contributor's guide: k0rdent-documentation-contributors-guide.md
+    - k0rdent documentation style guide: k0rdent-documentation-style-guide.md
 
 markdown_extensions:
   - callouts
