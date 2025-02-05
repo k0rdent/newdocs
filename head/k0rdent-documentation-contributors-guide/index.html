@@ -1646,21 +1646,22 @@
 <p>k0rdent documentation is written mostly in <a href="https://commonmark.org/">CommonMark</a> as adopted by GitHub, with a few CommonMark-compatible markdown enhancements used by MkDocs, the Material theme, and extensions (see below) to enable more-readable rendering of code, glossary items, images, and admonitions (e.g., NOTE:, TIP:, WARNING:, etc.). The <a href="../k0rdent-documentation-style-guide/">k0rdent documentation style guide</a> details our markdown style, along with those extensions.</p>
 <h2 id="how-k0rdentdocs-is-structured">How k0rdent/docs is structured<a class="headerlink" href="#how-k0rdentdocs-is-structured" title="Permanent link">#</a></h2>
 <p>The structure of k0rdent/docs is shown below:</p>
-<p>docs                                                # repository containing folder /docs
-├── docs                                            # subdirectory for /docs, containing further subdirectories for assets, images, theme, etc.
-│   ├── assets                                      # illustrations for docs
-│   ├── css                                         # css stylesheets
-│   ├── custom_theme                                # Material theme customizations
-│   ├── img                                         # site imagery (logos, icons, etc.)
-│   ├── stylesheets                                 # extra CSS stylesheets
-│   ├── index.md                                    # default homepage of the docs site
-│   ├── LICENSE                                     # k0rdent docs license (CC-BY-4.0)
-│   ├── (documentation-files.md)                    # actual docs pages (markdown documents)
-├── mkdocs.yml                                      # main configuration file for mkdocs, specifies site navigation and table of contents
-├── requirements.txt                                # mkdocs requirements (for installation with pip for building docs locally - see below)
-├── Dockerfile                                      # Dockerfile for building a container to serve docs interactively
-├── .gitignore                                      # Things to ignore when people push
-└── .github                                         # Special GitHub features, including allowed-patterns.yml for placeholders replacing secrets</p>
+<div class="highlight"><pre><span></span><code><span class="go">docs                                                # repository containing folder /docs</span>
+<span class="go">├── docs                                            # subdirectory for /docs, containing further subdirectories for assets, images, theme, etc.</span>
+<span class="go">│   ├── assets                                      # illustrations for docs</span>
+<span class="go">│   ├── css                                         # css stylesheets</span>
+<span class="go">│   ├── custom_theme                                # Material theme customizations</span>
+<span class="go">│   ├── img                                         # site imagery (logos, icons, etc.)</span>
+<span class="go">│   ├── stylesheets                                 # extra CSS stylesheets</span>
+<span class="go">│   ├── index.md                                    # default homepage of the docs site</span>
+<span class="go">│   ├── LICENSE                                     # k0rdent docs license (CC-BY-4.0)</span>
+<span class="go">│   ├── (documentation-files.md)                    # actual docs pages (markdown documents)</span>
+<span class="go">├── mkdocs.yml                                      # main configuration file for mkdocs, specifies site navigation and table of contents</span>
+<span class="go">├── requirements.txt                                # mkdocs requirements (for installation with pip for building docs locally - see below)</span>
+<span class="go">├── Dockerfile                                      # Dockerfile for building a container to serve docs interactively</span>
+<span class="go">├── .gitignore                                      # Things to ignore when people push</span>
+<span class="go">└── .github                                         # Special GitHub features, including allowed-patterns.yml for placeholders replacing secrets</span>
+</code></pre></div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>
