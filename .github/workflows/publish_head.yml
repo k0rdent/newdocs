@@ -4,14 +4,20 @@ on:
     branches:
       - main
 
-jobs:
-  deploy-head:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out source
-        uses: actions/checkout@v4
+permissions:
+  contents: write
 
-      - name: Configure git
+jobs:
+  deploy-docs:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Ensure all history and tags are fetched
+
+      - name: Configure Git Credentials
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -19,7 +25,15 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.x'
+          python-version: "3.x"
+
+      - name: Restore Cached Dependencies
+        uses: actions/cache@v4
+        with:
+          key: mkdocs-material-${{ env.cache_id }}
+          path: .cache
+          restore-keys: |
+            mkdocs-material-
 
       - name: Install mkdocs-material and mike
         run: |
@@ -28,11 +42,12 @@ jobs:
 
       - name: Deploy HEAD
         run: |
-          # Fetch and update gh-pages branch
           git fetch origin gh-pages
-          git checkout gh-pages
-          git pull origin gh-pages --rebase
-          # Go back to main
-          git checkout main
-          # Deploy as HEAD
+          if git show-ref --quiet refs/heads/gh-pages; then
+            git checkout gh-pages
+            git pull origin gh-pages --rebase
+            git checkout main
+          fi
+      
           mike deploy head --push
+          # mike set-default head --push
