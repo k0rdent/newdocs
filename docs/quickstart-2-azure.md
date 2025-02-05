@@ -368,8 +368,7 @@ kubectl -n kcm-system get secret my-azure-clusterdeployment1-kubeconfig -o jsonp
 And you can use the kubeconfig to see what's running on the cluster:
 
 ```shell
-KUBECONFIG="my-azure-clusterdeployment1-kubeconfig.kubeconfig"
-kubectl get pods -A
+KUBECONFIG="my-azure-clusterdeployment1-kubeconfig.kubeconfig" kubectl get pods -A
 ```
 
 ## List child clusters
