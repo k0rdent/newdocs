@@ -18,6 +18,7 @@ k0rdent documentation is written mostly in [CommonMark](https://commonmark.org/)
 
 The structure of k0rdent/docs is shown below:
 
+```console
 docs                                                # repository containing folder /docs
 ├── docs                                            # subdirectory for /docs, containing further subdirectories for assets, images, theme, etc.
 │   ├── assets                                      # illustrations for docs
@@ -33,6 +34,7 @@ docs                                                # repository containing fold
 ├── Dockerfile                                      # Dockerfile for building a container to serve docs interactively
 ├── .gitignore                                      # Things to ignore when people push
 └── .github                                         # Special GitHub features, including allowed-patterns.yml for placeholders replacing secrets
+```
 
    > NOTE:
    > The k0rdent documentation repository is called `docs` and cloning the repo will create a containing directory called `docs`.
