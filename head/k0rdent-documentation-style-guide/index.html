@@ -13,6 +13,8 @@
       
       
       
+        <link rel="prev" href="../k0rdent-documentation-contributors-guide/">
+      
       
       
       <link rel="icon" href="../img/favicon-32x32.png">
@@ -1345,17 +1347,19 @@
       
   
   
+    
   
   
+  
     
     
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10" checked>
         
           
           <label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
@@ -1369,7 +1373,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_10">
             <span class="md-nav__icon md-icon"></span>
             Contributing
@@ -1392,6 +1396,94 @@
   
 
       </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    k0rdent documentation style guide
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    k0rdent documentation style guide
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#our-markdown-style-theme-and-extensions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Our Markdown style, theme, and extensions
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#commonmark-basics" class="md-nav__link">
+    <span class="md-ellipsis">
+      CommonMark basics
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#admonitions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Admonitions
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1424,6 +1516,41 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#our-markdown-style-theme-and-extensions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Our Markdown style, theme, and extensions
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#commonmark-basics" class="md-nav__link">
+    <span class="md-ellipsis">
+      CommonMark basics
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#admonitions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Admonitions
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -1441,6 +1568,66 @@
 
 
 <h1 id="k0rdent-documentation-style-guide">k0rdent documentation style guide<a class="headerlink" href="#k0rdent-documentation-style-guide" title="Permanent link">#</a></h1>
+<p>This page gives style guidance to our Markdown, and makes some general recommendations regarding writing style for docs. It is <em>not</em> a complete style guide. In most cases, Project k0rdent aspires to follow style recommendations adopted by the Kubernetes Project's SIG Docs group. Please see the <a href="https://kubernetes.io/docs/contribute/style/style-guide/">Kubernetes Documentation Style Guide</a> for details.</p>
+<p>If you are looking for technical recommendations about how to contribute to docs, these are found in the <a href="../k0rdent-documentation-contributors-guide/">k0rdent Documentation Contributors Guide</a>.</p>
+<h2 id="our-markdown-style-theme-and-extensions">Our Markdown style, theme, and extensions<a class="headerlink" href="#our-markdown-style-theme-and-extensions" title="Permanent link">#</a></h2>
+<p>k0rdent docs uses:</p>
+<ul>
+<li>The <a href="https://www.mkdocs.org/">MkDocs</a> static site generator.</li>
+<li>The <a href="https://squidfunk.github.io/mkdocs-material/">Material theme</a> for MkDocs.</li>
+</ul>
+<p>... plus other extensions and plugins that have less of an effect on how you write documentation. Versions of all components are in the file <a href="https://github.com/k0rdent/docs/blob/main/requirements.txt"><code>requirements.txt</code></a> at toplevel in k0rdent/docs.</p>
+<p>At present, we are mostly utilizing pure CommonMark with certain Material theme extensions (see below), though we are experimenting with other plugins and extensions.</p>
+<h2 id="commonmark-basics">CommonMark basics<a class="headerlink" href="#commonmark-basics" title="Permanent link">#</a></h2>
+<p>If you don't know Markdown already, <a href="https://commonmark.org">CommonMark</a> is a strongly-defined specification of Markdown with unambiguous syntax, plus a suite of tests to validate Markdown implementations against the specification. It's used in MkDocs and (with some iffyness around the edges) GitHub, which means our docs are readable when we use MkDocs to render them into static pages for display on the web, and also readable (in most cases) when you surf GitHub and look at the render there.</p>
+<p>Comfortingly, the CommonMark spec is very similar to whatever version(s) of Markdown you already know (e.g., GitHub-flavored Markdown) as well as allied structured-text specifications that share DNA with Markdown, like ReStructuredText (.rst), commonly used in open source docs environments.</p>
+<p>Some resources you may find useful:</p>
+<ul>
+<li><a href="https://commonmark.org/help/">CommonMark Markdown Reference</a></li>
+<li><a href="https://commonmark.org/help/tutorial/">CommonMark Markdown Tutorial</a></li>
+</ul>
+<h2 id="admonitions">Admonitions<a class="headerlink" href="#admonitions" title="Permanent link">#</a></h2>
+<p>For the moment, we're coming up to speed with a modern solution for admonitions, but meanwhile are using the OG CommonMark form of 'notes are blockquotes with special headers, rendered prettily by MkDocs. Examples:</p>
+<div class="highlight"><pre><span></span><code>&gt;NOTE:
+&gt;This is a note.
+&gt;It can go over several lines as needed, and can contain `code`, **boldface**, _italics_, and other body-copy Markdown elements.
+
+&gt;INFO:
+&gt;This is an info box.
+&gt;It can go over several lines as needed, and can contain `code`, **boldface**, _italics_, and other body-copy Markdown elements.
+
+&gt;CAUTION:
+&gt;This is a cautionary admonishment.
+&gt;It can go over several lines as needed, and can contain `code`, **boldface**, _italics_, and other body-copy Markdown elements.
+
+&gt;WARNING:
+&gt;This is a warning.
+&gt;It can go over several lines as needed, and can contain `code`, **boldface**, _italics_, and other body-copy Markdown elements.
+</code></pre></div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>
+This is a note.
+It can go over several lines as needed, and can contain <code>code</code>, <strong>boldface</strong>, <em>italics</em>, and other body-copy Markdown elements.</p>
+</div>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<p>
+This is an info box.
+It can go over several lines as needed, and can contain <code>code</code>, <strong>boldface</strong>, <em>italics</em>, and other body-copy Markdown elements.</p>
+</div>
+<div class="admonition caution">
+<p class="admonition-title">Caution</p>
+<p>
+This is a cautionary admonishment.
+It can go over several lines as needed, and can contain <code>code</code>, <strong>boldface</strong>, <em>italics</em>, and other body-copy Markdown elements.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>
+This is a warning.
+It can go over several lines as needed, and can contain <code>code</code>, <strong>boldface</strong>, <em>italics</em>, and other body-copy Markdown elements.</p>
+</div>
 
 
 
