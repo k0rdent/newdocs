@@ -27,7 +27,7 @@ For example, this YAML describes a custom `Source` object of `kind` `HelmReposit
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: HelmRepository
 metadata:
-  name: k0rdent-templates
+  name: k0rdent-catalog
   namespace: kcm-system
   labels:
     k0rdent.mirantis.com/managed: "true"
@@ -101,7 +101,7 @@ spec:
       chart: os-k0sproject-k0smotron
       sourceRef:
         kind: HelmRepository
-        name: k0rdent-templates
+        name: k0rdent-catalog
 ```
 
 > EXAMPLE: 

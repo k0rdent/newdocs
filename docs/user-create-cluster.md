@@ -113,7 +113,7 @@ Follow these steps to deploy a standalone Kubernetes cluster:
     apiVersion: k0rdent.mirantis.com/v1alpha1
     kind: ClusterDeployment
     metadata:
-      name: my-managed-cluster
+      name: my-cluster-deployment
       namespace: kcm-system
     spec:
       template: aws-standalone-cp-0-0-3

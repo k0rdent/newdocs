@@ -31,7 +31,7 @@ spec:
       reconcileStrategy: ChartVersion
       sourceRef:
         kind: HelmRepository
-        name: k0rdent-templates
+        name: k0rdent-catalog
       version: 0.0.4
 status:
   capiContracts:
@@ -69,7 +69,7 @@ spec:
       reconcileStrategy: ChartVersion
       sourceRef:
         kind: HelmRepository
-        name: k0rdent-templates
+        name: k0rdent-catalog
       version: 0.0.3
 status:
   chartRef:
@@ -150,7 +150,7 @@ spec:
       reconcileStrategy: ChartVersion
       sourceRef:
         kind: HelmRepository
-        name: k0rdent-templates
+        name: k0rdent-catalog
       version: 3.2.6
 status:
   chartRef:

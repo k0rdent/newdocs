@@ -56,32 +56,33 @@ when you create it, as in:
 apiVersion: k0rdent.mirantis.com/v1alpha1
 kind: ClusterDeployment
 metadata:
-  name: my-managed-cluster
+  name: my-cluster-deployment
   namespace: tenant42
 spec:
   config:
     clusterLabels: {}
   template: aws-standalone-cp-0-0-3
   credential: aws-credential
-  services:
-    - template: project-ingress-nginx-4.11.0
-      name: ingress-nginx
-      namespace: tenant42
-  servicesPriority: 100
-  stopOnConflict: false
+  serviceSpec:
+    services:
+      - template: project-ingress-nginx-4.11.0
+        name: ingress-nginx
+        namespace: tenant42
+    priority: 100
 ```
-As you can see, you're simply referencing the template in the `.spec.services.template` field of the `ClusterDeployment`
+As you can see, you're simply referencing the template in the `.spec.serviceSpec.services[].template` field of the `ClusterDeployment`
 to tell k0rdent that you want this service to be part of this cluster.
 
-If you wanted to add this serice to an existing cluster, you would simply patch the definition of the `ClusterDeployment`, as in:
+If you wanted to add this service to an existing cluster, you would simply patch the definition of the `ClusterDeployment`, as in:
 
 ```yaml
-kubectl patch clusterdeployment my-managed-cluster -n tenant42 --type='merge' -p '
+kubectl patch clusterdeployment my-cluster-deployment -n tenant42 --type='merge' -p '
 spec:
-  services:
-    - template: project-ingress-nginx-4.11.0
-      name: ingress-nginx
-      namespace: tenant42
+  serviceSpec:
+    services:
+      - template: project-ingress-nginx-4.11.0
+        name: ingress-nginx
+        namespace: tenant42
 ```
 
 Let's look at a more complex case, involving deploying beach-head services on a single cluster.
@@ -94,7 +95,7 @@ Beach-head services can be installed on a cluster deployment (that is, a target 
 apiVersion: k0rdent.mirantis.com/v1alpha1
 kind: ClusterDeployment
 metadata:
-  name: my-managed-cluster
+  name: my-cluster-deployment
   namespace: kcm-system
 spec:
   config:
@@ -148,15 +149,12 @@ spec:
       chart: kyverno
       version: 3.2.6
       interval: 10m0s
-      reconcileStrategy: ChartVersion
       sourceRef:
         kind: HelmRepository
-        name: kcm-templates
-      version: 3.2.6
-        name: k0rdent-templates
+        name: k0rdent-catalog
 ```
 
-The `k0rdent-templates` helm repository hosts the actual kyverno chart version 3.2.6.
+The `k0rdent-catalog` helm repository hosts the actual kyverno chart version 3.2.6.
 For more details see the [Bring your own Templates](template-byo.md) guide.
 
 ### Configuring Custom Values
@@ -266,7 +264,7 @@ status:
   . . .
   observedGeneration: 1
   services:
-  - clusterName: my-managed-cluster
+  - clusterName: my-cluster-deployment
     clusterNamespace: kcm-system
     conditions:
     - lastTransitionTime: "2024-12-11T23:03:05Z"

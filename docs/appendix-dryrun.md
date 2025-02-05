@@ -10,7 +10,7 @@ Note that if no configuration (`.spec.config`) is provided, default values from 
 apiVersion: k0rdent.mirantis.com/v1alpha1
 kind: ClusterDeployment
 metadata:
-  name: my-managed-cluster
+  name: my-cluster-deployment
   namespace: kcm-system
 spec:
   template: aws-standalone-cp-0-0-3
@@ -26,7 +26,7 @@ After validation (this is, you see `TemplateReady` as a condition in `.status.co
 apiVersion: k0rdent.mirantis.com/v1alpha1
 kind: ClusterDeployment
 metadata:
-  name: my-managed-cluster
+  name: my-cluster-deployment
   namespace: kcm-system
 spec:
   template: aws-standalone-cp-0-0-3

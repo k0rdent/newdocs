@@ -46,12 +46,12 @@ The basic sequence looks like this:
           interval: 10m0s
           sourceRef:
             kind: HelmRepository
-            name: k0rdent-templates
+            name: k0rdent-catalog
     ```
 
     In this case, we're creating a `ServiceTemplate` called `ingress-nginx-4.11.3` in the
     `my-target-namespace` namespace.  It references version 4.11.3 of the `ingress-nginx` chart
-    located in the `k0rdent-templates` Helm repository.
+    located in the `k0rdent-catalog` Helm repository.
 
     For more information on creating templates, see the [Template Guide](template-intro.md).
 
@@ -93,26 +93,26 @@ The basic sequence looks like this:
     apiVersion: k0rdent.mirantis.com/v1alpha1
     kind: ClusterDeployment
     metadata:
-      name: my-managed-cluster
+      name: my-cluster-deployment
       namespace: tenant42
     spec:
       config:
         clusterLabels: {}
       template: aws-standalone-cp-0-1-0
       credential: aws-credential
-      services:
-        - template: project-ingress-nginx-4.11.3
-          name: ingress-nginx
-          namespace: my-target-namespace
-      servicesPriority: 100
-      stopOnConflict: false
+      serviceSpec:
+        services:
+          - template: project-ingress-nginx-4.11.3
+            name: ingress-nginx
+            namespace: my-target-namespace
+        priority: 100
     ```
-    As you can see, you're simply referencing the template in the `.spec.services.template` field of the `ClusterDeployment`
+    As you can see, you're simply referencing the template in the `.spec.serviceSpec.services[].template` field of the `ClusterDeployment`
     to tell k0rdent that you want this service to be part of this cluster.
 
     If you wanted to add this service to an existing cluster, you would simply patch the definition of the `ClusterDeployment`, as in:
 
     ```shell
-    kubectl patch clusterdeployment my-managed-cluster -n my-target-namespace --type='merge' -p '{"spec":{"services":[{"template":"project-ingress-nginx-4.11.3","name":"ingress-nginx","namespace":"my-target-namespace"}]}}'
+    kubectl patch clusterdeployment my-cluster-deployment -n my-target-namespace --type='merge' -p '{"spec":{"services":[{"template":"project-ingress-nginx-4.11.3","name":"ingress-nginx","namespace":"my-target-namespace"}]}}'
     ```
     For more information on creating and using `ServiceTemplate` objects, see the [User Guide](user-create-service.md).
