@@ -84,7 +84,7 @@ nav:
     - Enabling drift detection: user-enable-drift-detection.md
   - k0rdent Templates Reference:
     - Introduction to k0rdent templates: template-intro.md
-    - Using predefined templates: template-predefined.md
+    - Removing predefined templates: template-predefined.md
     - Bring-your-own (BYO) templates: template-byo.md
     - Templates for Amazon Web Services: template-aws.md
     - Templates for Azure: template-azure.md

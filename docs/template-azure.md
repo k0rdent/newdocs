@@ -20,10 +20,10 @@ az vm list-sizes --location "<location>" -o table
 
 Then desired VM size could be passed to the:
 
-- `.spec.config.vmSize` - for hosted CP deployment.
-- `.spec.config.controlPlane.vmSize` - for control plane nodes in the standalone
+* `.spec.config.vmSize` - for hosted CP deployment.
+* `.spec.config.controlPlane.vmSize` - for control plane nodes in the standalone
   deployment.
-- `.spec.config.worker.vmSize` - for worker nodes in the standalone deployment.
+* `.spec.config.worker.vmSize` - for worker nodes in the standalone deployment.
 
 *Example: Standard_A4_v2*
 
@@ -32,10 +32,10 @@ Then desired VM size could be passed to the:
 Root volume size of the VM (in GB) can be changed through the following
 parameters:
 
-- `.spec.config.rootVolumeSize` - for hosted CP deployment.
-- `.spec.config.controlPlane.rootVolumeSize` - for control plane nodes in the
+* `.spec.config.rootVolumeSize` - for hosted CP deployment.
+* `.spec.config.controlPlane.rootVolumeSize` - for control plane nodes in the
   standalone deployment.
-- `.spec.config.worker.rootVolumeSize` - for worker nodes in the standalone
+* `.spec.config.worker.rootVolumeSize` - for worker nodes in the standalone
   deployment.
 
 *Default value: 30*
@@ -48,10 +48,10 @@ defined in your image.
 You can define the image which will be used for your machine using the following
 parameters:
 
-- `.spec.config.image` - for hosted CP deployment.
-- `.spec.config.controlPlane.image` - for control plane nodes in the standalone
+*`.spec.config.image` - for hosted CP deployment.
+* `.spec.config.controlPlane.image` - for control plane nodes in the standalone
   deployment.
-- `.spec.config.worker.image` - for worker nodes in the standalone deployment.
+* `.spec.config.worker.image` - for worker nodes in the standalone deployment.
 
 There are multiple self-excluding ways to define the image source (for example Azure
 Compute Gallery, Azure Marketplace, and so on).
@@ -64,9 +64,9 @@ By default, the latest official CAPZ Ubuntu based image is used.
 
 ## Prerequisites
 
--   Management Kubernetes cluster (v1.28+) deployed on Azure with kcm installed
+*   Management Kubernetes cluster (v1.28+) deployed on Azure with kcm installed
     on it
--   Default storage class configured on the management cluster
+*   Default storage class configured on the management cluster
 
 Keep in mind that all control plane components for all managed clusters will
 reside in the management cluster.
@@ -135,7 +135,7 @@ kind: ClusterDeployment
 metadata:
   name: azure-hosted-cp
 spec:
-  template: azure-hosted-cp-0-0-2
+  template: azure-hosted-cp-0-1-0
   credential: azure-credential
   config:
     clusterLabels: {}
@@ -158,7 +158,7 @@ kind: ClusterDeployment
 metadata:
   name: azure-hosted-cp
 spec:
-  template: azure-hosted-cp-0-0-2
+  template: azure-hosted-cp-0-1-0
   credential: azure-credential
   config:
     clusterLabels: {}
@@ -207,10 +207,10 @@ kubectl patch azurecluster <cluster-name> --type=merge --patch 'metadata: {final
 ```
 
 When the finalizer is placed you can remove the `ClusterDeployment` as usual. Check that
-all `AzureMachine` objects are deleted successfully, and remove the finalizer you've
+all `AzureMachine` objects are deleted successfully, then remove the finalizer you've
 placed to finish cluster deletion.
 
-If you have orphaned `AzureMachine`s left, you'll have to delete the finalizers on
+If you have orphaned `AzureMachine` objects left, you'll have to delete the finalizers on
 them manually after making sure that no VMs are present in Azure.
 
 > NOTE:

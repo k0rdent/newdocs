@@ -3,13 +3,13 @@
 By default, k0rdent delivers a set of default `ProviderTemplate`, `ClusterTemplate` and `ServiceTemplate` objects:
 
 * `ProviderTemplate`
-   The template containing the configuration of the provider (e.g., k0smotron, AWS). These are cluster-scoped.
+   The template containing the configuration of the provider (for example, k0smotron or AWS). These are cluster-scoped.
 * `ClusterTemplate`
    The template containing the configuration of the cluster objects. These are namespace-scoped.
 * `ServiceTemplate`
    The template containing the configuration of the service to be installed on the cluster deployment. These are namespace-scoped.
 
-All Templates are immutable, if you want to change something about a cluster that has been deployed, you have to
+All Templates are immutable, so if you want to change something about a cluster that has been deployed, you have to
 apply a whole new template. You can also build your own templates and use them for deployment along with the
 templates shipped with k0rdent.
 
@@ -22,7 +22,7 @@ EXAMPLE: An example of a `ProviderTemplate` with its status.
 apiVersion: k0rdent.mirantis.com/v1alpha1
 kind: ProviderTemplate
 metadata:
-  name: cluster-api-0-0-4
+  name: cluster-api-0-1-0
 spec:
   helm:
     chartSpec:
@@ -32,7 +32,7 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: k0rdent-catalog
-      version: 0.0.4
+      version: 0.1.0
 status:
   capiContracts:
     v1alpha3: ""
@@ -59,7 +59,7 @@ EXAMPLE: An example of a `ClusterTemplate` with its status.
 apiVersion: k0rdent.mirantis.com/v1alpha1
 kind: ClusterTemplate
 metadata:
-  name: aws-standalone-cp-0-0-3
+  name: aws-standalone-cp-0-1-0
   namespace: kcm-system
 spec:
   helm:
@@ -70,11 +70,11 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: k0rdent-catalog
-      version: 0.0.3
+      version: 0.1.0
 status:
   chartRef:
     kind: HelmChart
-    name: aws-standalone-cp-0-0-3
+    name: aws-standalone-cp-0-1-0
     namespace: kcm-system
   config:
     bastion:
@@ -167,7 +167,7 @@ status:
 Cluster and Service Templates can be delivered to target namespaces using the `AccessManagement`,
 `ClusterTemplateChain` and `ServiceTemplateChain` objects. The `AccessManagement` object contains the list of
 access rules to apply. Each access rule contains the namespaces' definition for delivering templates into and
-the template chains. Each `ClusterTemplateChain` and `ServiceTemplateChain` contains the supported templates
+the template chains to deliver. Each `ClusterTemplateChain` and `ServiceTemplateChain` contains the supported templates
 and the upgrade sequences for them.
 
 The example of `ClusterTemplate` Management:
@@ -184,15 +184,15 @@ The example of `ClusterTemplate` Management:
       namespace: kcm-system
     spec:
       supportedTemplates:
-        - name: aws-standalone-cp-0-0-1
-          availableUpgrades:
-            - name: aws-standalone-cp-0-0-2
         - name: aws-standalone-cp-0-0-2
+          availableUpgrades:
+            - name: aws-standalone-cp-0-1-0
+        - name: aws-standalone-cp-0-1-0
     ```
 
 2. Edit the `AccessManagement` object and configure the `.spec.accessRules`.
     For example, to apply all templates and upgrade sequences defined in the `aws` `ClusterTemplateChain` to the
-    `default` namespace, the following `accessRule` should be added:
+    `default` namespace, add the following `accessRule`:
 
     ```yaml
     spec:
@@ -208,14 +208,14 @@ The kcm controllers will deliver all the `ClusterTemplate` objects across the ta
 As a result, the following new objects should be created:
 
 * `ClusterTemplateChain` `default/aws`
-* `ClusterTemplate` `default/aws-standalone-cp-0-0-1`
-* `ClusterTemplate` `default/aws-standalone-cp-0-0-2` (available for the upgrade from `aws-standalone-cp-0-0-1`)
+* `ClusterTemplate` `default/aws-standalone-cp-0-0-2`
+* `ClusterTemplate` `default/aws-standalone-cp-0-1-0` (available for the upgrade from `aws-standalone-cp-0-0-2`)
 
-NOTE:
-1. The target `ClusterTemplate` defined as being available for the upgrade should reference the same helm chart name
-as the source `ClusterTemplate`. Otherwise, after the upgrade is triggered, the cluster will be removed and then
-recreated from scratch, even if the objects in the helm chart are the same.
-2. The target template should not affect immutable fields or any other incompatible internal objects upgrades,
-otherwise the upgrade will fail.
+> NOTE:
+> 1. The target `ClusterTemplate` defined as being available for the upgrade should reference the same helm chart name
+> as the source `ClusterTemplate`. Otherwise, after the upgrade is triggered, the cluster will be removed and then
+> recreated from scratch, even if the objects in the helm chart are the same.
+> 2. The target template should not affect immutable fields or any other incompatible internal objects upgrades,
+> otherwise the upgrade will fail.
 
 

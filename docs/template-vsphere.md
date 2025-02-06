@@ -7,7 +7,7 @@ To create a cluster deployment a number of parameters should be passed to the
 
 ### Parameter list
 
-The following is the list of vSphere specific parameters, which are _required_
+The following is the list of vSphere specific parameters that are _required_
 for successful cluster creation.
 
 | Parameter                             | Example                               | Description                                                     |
@@ -58,7 +58,7 @@ govc vm.info -t '*'
 > Minimal `govc` configuration requires setting: `GOVC_URL`, `GOVC_USERNAME`, `GOVC_PASSWORD` environment variables.
 
 
-## Example of ClusterDeployment CR
+## Example of a ClusterDeployment CR
 
 With all above parameters provided your `ClusterDeployment` can look like this:
 
@@ -68,7 +68,7 @@ kind: ClusterDeployment
 metadata:
   name: cluster-1
 spec:
-  template: vsphere-standalone-cp-0-0-2
+  template: vsphere-standalone-cp-0-1-0
   credential: vsphere-credential
   config:
     clusterLabels: {}
@@ -107,38 +107,36 @@ Don't forget to replace placeholder values such as `VSPHERE_SERVER` with actual 
 ## SSH
 
 Currently SSH configuration on vSphere expects that the user is already created
-before template creation. Because of that you must pass username along with SSH
+before template creation. Because of that you must pass the username along with the SSH
 public key to configure SSH access.
 
-
 The SSH public key can be passed to `.spec.config.ssh.publicKey` (in the case of a
-hosted control plane) parameter or `.spec.config.controlPlane.ssh.publicKey` and
-`.spec.config.worker.ssh.publicKey` parameters (in the case of a standalone control) of the
+hosted control plane) or `.spec.config.controlPlane.ssh.publicKey` and
+`.spec.config.worker.ssh.publicKey` (in the case of a standalone control) of the
 `ClusterDeployment` object.
 
-SSH public key must be passed literally as a string.
+The SSH public key must be passed literally as a string.
 
-You can pass the username passed to `.spec.config.controlPlane.ssh.user`,
-`.spec.config.worker.ssh.user` or `.spec.config.ssh.user` depending on you
+You can pass the username to `.spec.config.controlPlane.ssh.user`,
+`.spec.config.worker.ssh.user` or `.spec.config.ssh.user`, depending on you
 deployment model.
 
 ## VM resources
 
 The following parameters are used to define VM resources:
 
-| Parameter         | Example | Description                                                          |
-|-------------------|---------|----------------------------------------------------------------------|
-| `.rootVolumeSize` | `50`    | Root volume size in GB (can't be less than one defined in the image) |
-| `.cpus`           | `2`     | Number of CPUs                                                       |
-| `.memory`         | `4096`  | Memory size in MB                                                    |
+| Parameter         | Example | Description                                                              |
+|-------------------|---------|--------------------------------------------------------------------------|
+| `.rootVolumeSize` | `50`    | Root volume size in GB (can't be less than the one defined in the image) |
+| `.cpus`           | `2`     | Number of CPUs                                                           |
+| `.memory`         | `4096`  | Memory size in MB                                                        |
 
 The resource parameters are the same for hosted and standalone CP deployments,
 but they are positioned differently in the spec, which means that they're going to:
 
-- `.spec.config` in case of hosted CP deployment.
-- `.spec.config.controlPlane` in in case of standalone CP for control plane
-  nodes.
-- `.spec.config.worker` in in case of standalone CP for worker nodes.
+* `.spec.config` in case of hosted CP deployment.
+* `.spec.config.controlPlane` in in case of standalone CP for control plane nodes.
+* `.spec.config.worker` in in case of standalone CP for worker nodes.
 
 ## VM Image and network
 
@@ -153,22 +151,19 @@ used:
 As with resource parameters the position of these parameters in the
 `ClusterDeployment` depends on deployment type and these parameters are used in:
 
-- `.spec.config` in case of hosted CP deployment.
-- `.spec.config.controlPlane` in in case of standalone CP for control plane
-  nodes.
-- `.spec.config.worker` in in case of standalone CP for worker nodes.
+* `.spec.config` in case of hosted CP deployment.
+* `.spec.config.controlPlane` in in case of standalone CP for control plane nodes.
+* `.spec.config.worker` in in case of standalone CP for worker nodes.
 
 # Hosted control plane (k0smotron) deployment
 
 ## Prerequisites
 
-- Management Kubernetes cluster (v1.28+) deployed on vSphere with k0rdent installed
-  on it
+* Management Kubernetes cluster (v1.28+) deployed on vSphere with k0rdent installed on it
 
 Keep in mind that all control plane components for all managed clusters will
 reside in the management cluster, so make sure the server is robust enough to
 handle it.
-
 
 ## ClusterDeployment manifest
 
@@ -180,7 +175,7 @@ check them in the [template parameters](template-intro.md) section.
 > before deploying the cluster. Ensure that this IP matches the IP assigned to
 > the k0smotron load balancer (LB) service. Provide the control plane endpoint
 > IP to the k0smotron service via an annotation accepted by your LB provider
-> (e.g., the `kube-vip` annotation in the example below).
+> (such as the `kube-vip` annotation in the example below).
 
 ```yaml
 apiVersion: k0rdent.mirantis.com/v1alpha1
@@ -188,7 +183,7 @@ kind: ClusterDeployment
 metadata:
   name: cluster-1
 spec:
-  template: vsphere-hosted-cp-0-0-2
+  template: vsphere-hosted-cp-0-1-0
   credential: vsphere-credential
   config:
     clusterLabels: {}

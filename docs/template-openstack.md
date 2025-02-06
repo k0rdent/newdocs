@@ -20,7 +20,7 @@ To deploy an OpenStack cluster, the following are the primary parameters in the 
     </tr>
     <tr>
       <td>.spec.template</td>
-      <td><code>openstack-standalone-cp-0-0-1</code></td>
+      <td><code>openstack-standalone-cp-0-1-0</code></td>
       <td>Reference to the ClusterTemplate.</td>
     </tr>
     <tr>
@@ -76,7 +76,7 @@ metadata:
   name: my-openstack-cluster-deployment
   namespace: kcm-system
 spec:
-  template: openstack-standalone-cp-0-0-2
+  template: openstack-standalone-cp-0-1-0
   credential: openstack-cluster-identity-cred
   config:
     clusterLabels: {}
