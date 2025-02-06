@@ -1672,9 +1672,9 @@
 
 
 <h1 id="deploy-services-to-a-managed-cluster">Deploy Services to a Managed Cluster<a class="headerlink" href="#deploy-services-to-a-managed-cluster" title="Permanent link">#</a></h1>
-<p>At its heart, everything in k0rdent is based on templates that help define Kubernetes objects. For clusters, these are <code>ClusterTemplate</code>s. For applications and services, these are <code>ServiceTemplate</code>s.</p>
-<h2 id="understanding-servicetemplates">Understanding <code>ServiceTemplate</code>s<a class="headerlink" href="#understanding-servicetemplates" title="Permanent link">#</a></h2>
-<p><code>ServiceTemplate</code>s are meant to let k0rdent know where to find a Helm chart with instructions for installing
+<p>At its heart, everything in k0rdent is based on templates that help define Kubernetes objects. For clusters, these are <code>ClusterTemplate</code> objects. For applications and services, these are <code>ServiceTemplate</code> objects.</p>
+<h2 id="understanding-servicetemplates">Understanding ServiceTemplates<a class="headerlink" href="#understanding-servicetemplates" title="Permanent link">#</a></h2>
+<p><code>ServiceTemplate</code> objects are meant to let k0rdent know where to find a Helm chart with instructions for installing
 an application. In many cases, these charts will be in a private repository.  For example, consider this template for
 installing Nginx Ingress:</p>
 <div class="highlight"><pre><span></span><code><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">k0rdent.mirantis.com/v1alpha1</span>
@@ -1707,12 +1707,11 @@ installing Nginx Ingress:</p>
 <p>Here you see a template called <code>project-ingress-nginx-4.11.0</code> that is meant to be deployed in the <code>tenant42</code> namespace.
 The <code>.spec.helm.chartSpec</code> specifies the name of the Helm chart and where to find it, as well as the version and other 
 important information. The <code>ServiceTemplateChain</code> shows that this template is also an upgrade path from version 4.10.0.</p>
-<p>If you wanted to deploy this as an application, you would first go ahead and add it to the cluster in which you were
-working, so if you were to save this YAML to a file called <code>project-ingress.yaml</code> you could run this command on the management cluster:</p>
+<p>If you wanted to deploy this as an application, you would first go ahead and add the template to the cluster in which you were working, so if you were to save this YAML to a file called <code>project-ingress.yaml</code> you could run this command on the management cluster:</p>
 <div class="highlight"><pre><span></span><code>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>project-ingress.yaml<span class="w"> </span>-n<span class="w"> </span>tenant42
 </code></pre></div>
 <h2 id="adding-a-service-to-a-clusterdeployment">Adding a <code>Service</code> to a <code>ClusterDeployment</code><a class="headerlink" href="#adding-a-service-to-a-clusterdeployment" title="Permanent link">#</a></h2>
-<p>To add the service defined by this template to a cluster, you would simply add it to the <code>ClusterDeployment</code> object
+<p>To add the service defined by this template to a cluster, you simply add it to the <code>ClusterDeployment</code> object
 when you create it, as in:</p>
 <p><div class="highlight"><pre><span></span><code><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">k0rdent.mirantis.com/v1alpha1</span>
 <span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ClusterDeployment</span>
@@ -1722,7 +1721,7 @@ when you create it, as in:</p>
 <span class="nt">spec</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">config</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">clusterLabels</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{}</span>
-<span class="w">  </span><span class="nt">template</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">aws-standalone-cp-0-0-3</span>
+<span class="w">  </span><span class="nt">template</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">aws-standalone-cp-0-1-0</span>
 <span class="w">  </span><span class="nt">credential</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">aws-credential</span>
 <span class="w">  </span><span class="nt">serviceSpec</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">services</span><span class="p">:</span>
@@ -1778,9 +1777,9 @@ to tell k0rdent that you want this service to be part of this cluster.</p>
 <span class="w">        </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ingress-nginx</span>
 <span class="w">        </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ingress-nginx</span>
 <span class="w">    </span><span class="nt">priority</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">100</span>
-<span class="w">  </span><span class="nt">template</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">aws-standalone-cp-0-0-6</span>
+<span class="w">  </span><span class="nt">template</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">aws-standalone-cp-0-1-0</span>
 </code></pre></div>
-<p>In the example above the fields under <code>serviceSpec</code> are relevant to the deployment of beach-head services.</p>
+<p>In the example above, the fields under <code>serviceSpec</code> are relevant to the deployment of beach-head services.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>
@@ -1807,7 +1806,7 @@ service templates respectively, on the target cluster.  As before, the <code>Ser
 <p>The <code>k0rdent-catalog</code> helm repository hosts the actual kyverno chart version 3.2.6.
 For more details see the <a href="../template-byo/">Bring your own Templates</a> guide.</p>
 <h3 id="configuring-custom-values">Configuring Custom Values<a class="headerlink" href="#configuring-custom-values" title="Permanent link">#</a></h3>
-<p>Helm values can be passed to each beach-head services with the <code>.spec.serviceSpec.services[].values</code> field in the <code>ClusterDeployment</code> or <code>MultiClusterService</code> object. For example:</p>
+<p>Helm values can be passed to each beach-head service with the <code>.spec.serviceSpec.services[].values</code> field in the <code>ClusterDeployment</code> or <code>MultiClusterService</code> object. For example:</p>
 <p><div class="highlight"><pre><span></span><code><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">k0rdent.mirantis.com/v1alpha1</span>
 <span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ClusterDeployment</span>
 <span class="nt">metadata</span><span class="p">:</span>
@@ -1851,7 +1850,7 @@ For more details see the <a href="../template-byo/">Bring your own Templates</a>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>The values for ingress-nginx and kyverno start with the "ingress-nginx:" and "kyverno:" keys respectively because
-the helm charts used by the ingress-nginx-4-11-3 and kyverno-3-2-6 <code>ServiceTemplates</code> use the official upstream
+the helm charts used by the ingress-nginx-4-11-3 and kyverno-3-2-6 <code>ServiceTemplate</code> objects use the official upstream
 helm charts for ingress-nginx and kyverno as dependencies.</p>
 </div>
 <h3 id="templating-custom-values">Templating Custom Values<a class="headerlink" href="#templating-custom-values" title="Permanent link">#</a></h3>
@@ -1880,7 +1879,7 @@ helm charts for ingress-nginx and kyverno as dependencies.</p>
 <p>In this case, the host and port information will be fetched from the spec of the CAPI cluster that hosts this <code>ClusterDeployment</code>.</p>
 <h2 id="checking-status">Checking status<a class="headerlink" href="#checking-status" title="Permanent link">#</a></h2>
 <p>The <code>.status.services</code> field of the <code>ClusterDeployment</code> object shows the status for each of the beach-head services.
-For example, if you were to <code>describe</code> the <code>ClusterDeployment</code> with these services, you would see <code>condition</code>s that show
+For example, if you were to <code>describe</code> the <code>ClusterDeployment</code> with these services, you would see conditions that show
 status information, as in:</p>
 <div class="highlight"><pre><span></span><code><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">k0rdent.mirantis.com/v1alpha1</span>
 <span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ClusterDeployment</span>
@@ -1939,8 +1938,8 @@ You can check to see for yourself:</p>
 <div class="highlight"><pre><span></span><code><span class="go">NAME                                       READY   STATUS    RESTARTS   AGE</span>
 <span class="go">ingress-nginx-controller-cbcf8bf58-zhvph   1/1     Running   0          24m</span>
 </code></pre></div></p>
-<p>Youc an get more information on how to access the managed cluster in the <a href="../admin-creating-clusters/">create a cluster deployment</a>
-chapter, and more on <code>ServiceTemplate</code>s in the <a href="../template-intro/">Template Guide</a>.</p>
+<p>Youc an get more information on how to access the child cluster in the <a href="../admin-creating-clusters/">create a cluster deployment</a>
+chapter, and more on <code>ServiceTemplate</code> objects in the <a href="../template-intro/">Template Guide</a>.</p>
 <h2 id="removing-beach-head-services">Removing beach-head services<a class="headerlink" href="#removing-beach-head-services" title="Permanent link">#</a></h2>
 <p>To remove a beach-head service simply remove its entry from <code>.spec.serviceSpec.services</code>.
 The example below removes <code>kyverno-3-2-6</code>, so its status also removed from <code>.status.services</code>.</p>

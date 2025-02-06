@@ -952,18 +952,18 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#enabling-drift-detection" class="md-nav__link">
+  <a href="#how-drift-detection-and-correction-works" class="md-nav__link">
     <span class="md-ellipsis">
-      Enabling Drift Detection
+      How Drift Detection and Correction Works
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#how-drift-detection-and-correction-works" class="md-nav__link">
+  <a href="#enabling-drift-detection" class="md-nav__link">
     <span class="md-ellipsis">
-      How Drift Detection and Correction Works
+      Enabling Drift Detection
     </span>
   </a>
   
@@ -1564,18 +1564,18 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#enabling-drift-detection" class="md-nav__link">
+  <a href="#how-drift-detection-and-correction-works" class="md-nav__link">
     <span class="md-ellipsis">
-      Enabling Drift Detection
+      How Drift Detection and Correction Works
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#how-drift-detection-and-correction-works" class="md-nav__link">
+  <a href="#enabling-drift-detection" class="md-nav__link">
     <span class="md-ellipsis">
-      How Drift Detection and Correction Works
+      Enabling Drift Detection
     </span>
   </a>
   
@@ -1648,6 +1648,14 @@
 
 
 <h1 id="detecting-and-correcting-drift">Detecting and Correcting Drift<a class="headerlink" href="#detecting-and-correcting-drift" title="Permanent link">#</a></h1>
+<h2 id="how-drift-detection-and-correction-works">How Drift Detection and Correction Works<a class="headerlink" href="#how-drift-detection-and-correction-works" title="Permanent link">#</a></h2>
+<p>The drift-detection-manager watches for the deployed helm chart resources (that is, the resources deployed via a <code>ServiceTemplate</code>) and if it detects any changes 
+in the spec of the resources based on hash value, it updates the status of the <code>ResourceSummary</code> object. This change triggers the addon-controller in the <code>projectsveltos</code> namespace in the management cluster to update the status of the associated <code>ClusterSummary</code> object, which then triggers a reconcile to 
+re-deploy the spec to the target cluster.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The <code>ResourceSummary</code> and <code>ClusterSummary</code> are CRDs provided by Sveltos.</p>
+</div>
 <h2 id="enabling-drift-detection">Enabling Drift Detection<a class="headerlink" href="#enabling-drift-detection" title="Permanent link">#</a></h2>
 <p>Set <code>.spec.serviceSpec.syncMode=Continuous</code> in the <code>ClusterDeployment</code> or <code>MultiClusterService</code> object to enable drift detection and correction. Sveltos will then automatically deploy the drift-detection-manager on the targeted clusters:</p>
 <p><div class="highlight"><pre><span></span><code>kubectl<span class="w"> </span>-n<span class="w"> </span>projectsveltos<span class="w"> </span>get<span class="w"> </span>deployments.apps<span class="w"> </span>
@@ -1656,14 +1664,6 @@
 <span class="go">drift-detection-manager   1/1     1            1           152m</span>
 <span class="go">sveltos-agent-manager     1/1     1            1           152m</span>
 </code></pre></div></p>
-<h2 id="how-drift-detection-and-correction-works">How Drift Detection and Correction Works<a class="headerlink" href="#how-drift-detection-and-correction-works" title="Permanent link">#</a></h2>
-<p>The drift-detection-manager watches for the deployed helm chart resources (i.e., the resources deployed via a <code>ServiceTemplate</code>) and if it detects any changes 
-in the spec of the resources based on hash value, it updates the status of the <code>ResourceSummary</code> object. This change triggers the addon-controller in the "projectsveltos" namespace in the management cluster to update the status of the associated <code>ClusterSummary</code> object, which then triggers a reconcile to 
-re-deploy the spec to the target cluster.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The <code>ResourceSummary</code> and <code>ClusterSummary</code> are CRDs provided by Sveltos.</p>
-</div>
 <h2 id="using-drift-ignore">Using Drift Ignore<a class="headerlink" href="#using-drift-ignore" title="Permanent link">#</a></h2>
 <p>Certain resources can be completely opted out of drift correction by using this feature.
 In the following example, the "ingress-nginx/ingress-nginx-controller" deployment is ignored for drift correction on the target cluster.</p>
@@ -1694,7 +1694,7 @@ In the following example, the "ingress-nginx/ingress-nginx-controller" deploymen
 <span class="go">ingress-nginx-controller   3/3     3            3           3h58m   app.kubernetes.io/component=controller,app.kubernetes.io/instance=ingress-nginx,app.kubernetes.io/managed-by=Helm,app.kubernetes.io/name=ingress-nginx,app.kubernetes.io/part-of=ingress-nginx,app.kubernetes.io/version=1.11.0,helm.sh/chart=ingress-nginx-4.11.0</span>
 <span class="go">ingress-nginx-controller   3/3     3            3           3h59m   app.kubernetes.io/component=controller,app.kubernetes.io/instance=ingress-nginx,app.kubernetes.io/name=ingress-nginx,app.kubernetes.io/part-of=ingress-nginx,app.kubernetes.io/version=1.11.0,helm.sh/chart=ingress-nginx-4.11.0</span>
 </code></pre></div></p>
-<p>This can also be verified by observing that <code>ignoreForConfigurationDrift: true</code> for the targeted resource in the <code>ResourceSummary</code> spec on the target cluster.</p>
+<p>This can also be verified by observing that <code>ignoreForConfigurationDrift: true</code> is set for the targeted resource in the <code>ResourceSummary</code> spec on the target cluster.</p>
 <div class="highlight"><pre><span></span><code><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ResourceSummary</span>
 <span class="nt">metadata</span><span class="p">:</span>
 <span class="w">  </span><span class="l l-Scalar l-Scalar-Plain">. . .</span>
@@ -1715,15 +1715,15 @@ In the following example, the "ingress-nginx/ingress-nginx-controller" deploymen
 <span class="w">  </span><span class="nt">helmResourceHashes</span><span class="p">:</span>
 <span class="w">  </span><span class="l l-Scalar l-Scalar-Plain">. . .</span>
 </code></pre></div>
-<p>Yet another way to check if a resource is being ignored for drift is by verifying that <code>projectsveltos.io/driftDetectionIgnore: ok</code> annotation has been applied to it as can be seen below.</p>
+<p>Yet another way to check if a resource is being ignored for drift is by verifying that the <code>projectsveltos.io/driftDetectionIgnore: ok</code> annotation has been applied to it, as in:</p>
 <div class="highlight"><pre><span></span><code>kubectl<span class="w"> </span>-n<span class="w"> </span>ingress-nginx<span class="w"> </span>get<span class="w"> </span>deployments.apps<span class="w"> </span>ingress-nginx-controller<span class="w"> </span>-o<span class="o">=</span><span class="nv">jsonpath</span><span class="o">=</span><span class="s1">&#39;{.metadata.annotations}&#39;</span>
 <span class="o">{</span><span class="s2">&quot;deployment.kubernetes.io/revision&quot;</span>:<span class="s2">&quot;1&quot;</span>,<span class="s2">&quot;meta.helm.sh/release-name&quot;</span>:<span class="s2">&quot;ingress-nginx&quot;</span>,<span class="s2">&quot;meta.helm.sh/release-namespace&quot;</span>:<span class="s2">&quot;ingress-nginx&quot;</span>,<span class="s2">&quot;projectsveltos.io/driftDetectionIgnore&quot;</span>:<span class="s2">&quot;ok&quot;</span><span class="o">}</span>%
 </code></pre></div>
 <h3 id="removing-drift-ignore">Removing Drift Ignore<a class="headerlink" href="#removing-drift-ignore" title="Permanent link">#</a></h3>
-<p>The drift ignore setting can be removed by removing the <code>.spec.serviceSpec.driftIgnore</code>.</p>
+<p>The drift ignore setting can be removed by removing the <code>.spec.serviceSpec.driftIgnore</code> field.</p>
 <h2 id="using-drift-exclusions">Using Drift Exclusions<a class="headerlink" href="#using-drift-exclusions" title="Permanent link">#</a></h2>
 <p>Certain fields of a resource can be excluded from drift detection using this feature.
-In the following example, the <code>.spec.replicas</code> field of the "ingress-nginx/ingress-nginx-controller" deployment on the target cluster is excluded from drift detection.</p>
+In the following example, the <code>.spec.replicas</code> field of the <code>ingress-nginx/ingress-nginx-controller</code> deployment on the target cluster is excluded from drift detection.</p>
 <div class="highlight"><pre><span></span><code><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">k0rdent.mirantis.com/v1alpha1</span>
 <span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ClusterDeployment</span>
 <span class="nt">metadata</span><span class="p">:</span>
