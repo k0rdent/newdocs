@@ -994,7 +994,7 @@
         
   
   <span class="md-ellipsis">
-    Using predefined templates
+    Removing predefined templates
   </span>
   
 
@@ -1165,9 +1165,9 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#example-of-clusterdeployment-cr" class="md-nav__link">
+  <a href="#example-of-a-clusterdeployment-cr" class="md-nav__link">
     <span class="md-ellipsis">
-      Example of ClusterDeployment CR
+      Example of a ClusterDeployment CR
     </span>
   </a>
   
@@ -1582,9 +1582,9 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#example-of-clusterdeployment-cr" class="md-nav__link">
+  <a href="#example-of-a-clusterdeployment-cr" class="md-nav__link">
     <span class="md-ellipsis">
-      Example of ClusterDeployment CR
+      Example of a ClusterDeployment CR
     </span>
   </a>
   
@@ -1640,7 +1640,7 @@
 <p>To create a cluster deployment a number of parameters should be passed to the
 <code>ClusterDeployment</code> object.</p>
 <h3 id="parameter-list">Parameter list<a class="headerlink" href="#parameter-list" title="Permanent link">#</a></h3>
-<p>The following is the list of vSphere specific parameters, which are <em>required</em>
+<p>The following is the list of vSphere specific parameters that are <em>required</em>
 for successful cluster creation.</p>
 <table>
 <thead>
@@ -1736,14 +1736,14 @@ govc<span class="w"> </span>vm.info<span class="w"> </span>-t<span class="w"> </
 Follow official <code>govc</code> installation instructions from <a href="https://github.com/vmware/govmomi/blob/main/govc/README.md#installation">here</a>. The <code>govc</code> usage guide is <a href="https://github.com/vmware/govmomi/blob/main/govc/README.md#usage">here</a>.</p>
 <p>Minimal <code>govc</code> configuration requires setting: <code>GOVC_URL</code>, <code>GOVC_USERNAME</code>, <code>GOVC_PASSWORD</code> environment variables.</p>
 </div>
-<h2 id="example-of-clusterdeployment-cr">Example of ClusterDeployment CR<a class="headerlink" href="#example-of-clusterdeployment-cr" title="Permanent link">#</a></h2>
+<h2 id="example-of-a-clusterdeployment-cr">Example of a ClusterDeployment CR<a class="headerlink" href="#example-of-a-clusterdeployment-cr" title="Permanent link">#</a></h2>
 <p>With all above parameters provided your <code>ClusterDeployment</code> can look like this:</p>
 <div class="highlight"><pre><span></span><code><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">k0rdent.mirantis.com/v1alpha1</span>
 <span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ClusterDeployment</span>
 <span class="nt">metadata</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cluster-1</span>
 <span class="nt">spec</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">template</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">vsphere-standalone-cp-0-0-2</span>
+<span class="w">  </span><span class="nt">template</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">vsphere-standalone-cp-0-1-0</span>
 <span class="w">  </span><span class="nt">credential</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">vsphere-credential</span>
 <span class="w">  </span><span class="nt">config</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">clusterLabels</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{}</span>
@@ -1779,15 +1779,15 @@ Follow official <code>govc</code> installation instructions from <a href="https:
 <p>Don't forget to replace placeholder values such as <code>VSPHERE_SERVER</code> with actual values for your environment.</p>
 <h2 id="ssh">SSH<a class="headerlink" href="#ssh" title="Permanent link">#</a></h2>
 <p>Currently SSH configuration on vSphere expects that the user is already created
-before template creation. Because of that you must pass username along with SSH
+before template creation. Because of that you must pass the username along with the SSH
 public key to configure SSH access.</p>
 <p>The SSH public key can be passed to <code>.spec.config.ssh.publicKey</code> (in the case of a
-hosted control plane) parameter or <code>.spec.config.controlPlane.ssh.publicKey</code> and
-<code>.spec.config.worker.ssh.publicKey</code> parameters (in the case of a standalone control) of the
+hosted control plane) or <code>.spec.config.controlPlane.ssh.publicKey</code> and
+<code>.spec.config.worker.ssh.publicKey</code> (in the case of a standalone control) of the
 <code>ClusterDeployment</code> object.</p>
-<p>SSH public key must be passed literally as a string.</p>
-<p>You can pass the username passed to <code>.spec.config.controlPlane.ssh.user</code>,
-<code>.spec.config.worker.ssh.user</code> or <code>.spec.config.ssh.user</code> depending on you
+<p>The SSH public key must be passed literally as a string.</p>
+<p>You can pass the username to <code>.spec.config.controlPlane.ssh.user</code>,
+<code>.spec.config.worker.ssh.user</code> or <code>.spec.config.ssh.user</code>, depending on you
 deployment model.</p>
 <h2 id="vm-resources">VM resources<a class="headerlink" href="#vm-resources" title="Permanent link">#</a></h2>
 <p>The following parameters are used to define VM resources:</p>
@@ -1803,7 +1803,7 @@ deployment model.</p>
 <tr>
 <td><code>.rootVolumeSize</code></td>
 <td><code>50</code></td>
-<td>Root volume size in GB (can't be less than one defined in the image)</td>
+<td>Root volume size in GB (can't be less than the one defined in the image)</td>
 </tr>
 <tr>
 <td><code>.cpus</code></td>
@@ -1821,8 +1821,7 @@ deployment model.</p>
 but they are positioned differently in the spec, which means that they're going to:</p>
 <ul>
 <li><code>.spec.config</code> in case of hosted CP deployment.</li>
-<li><code>.spec.config.controlPlane</code> in in case of standalone CP for control plane
-  nodes.</li>
+<li><code>.spec.config.controlPlane</code> in in case of standalone CP for control plane nodes.</li>
 <li><code>.spec.config.worker</code> in in case of standalone CP for worker nodes.</li>
 </ul>
 <h2 id="vm-image-and-network">VM Image and network<a class="headerlink" href="#vm-image-and-network" title="Permanent link">#</a></h2>
@@ -1853,15 +1852,13 @@ used:</p>
 <code>ClusterDeployment</code> depends on deployment type and these parameters are used in:</p>
 <ul>
 <li><code>.spec.config</code> in case of hosted CP deployment.</li>
-<li><code>.spec.config.controlPlane</code> in in case of standalone CP for control plane
-  nodes.</li>
+<li><code>.spec.config.controlPlane</code> in in case of standalone CP for control plane nodes.</li>
 <li><code>.spec.config.worker</code> in in case of standalone CP for worker nodes.</li>
 </ul>
 <h1 id="hosted-control-plane-k0smotron-deployment">Hosted control plane (k0smotron) deployment<a class="headerlink" href="#hosted-control-plane-k0smotron-deployment" title="Permanent link">#</a></h1>
 <h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">#</a></h2>
 <ul>
-<li>Management Kubernetes cluster (v1.28+) deployed on vSphere with k0rdent installed
-  on it</li>
+<li>Management Kubernetes cluster (v1.28+) deployed on vSphere with k0rdent installed on it</li>
 </ul>
 <p>Keep in mind that all control plane components for all managed clusters will
 reside in the management cluster, so make sure the server is robust enough to
@@ -1876,14 +1873,14 @@ The vSphere provider requires the control plane endpoint IP to be specified
 before deploying the cluster. Ensure that this IP matches the IP assigned to
 the k0smotron load balancer (LB) service. Provide the control plane endpoint
 IP to the k0smotron service via an annotation accepted by your LB provider
-(e.g., the <code>kube-vip</code> annotation in the example below).</p>
+(such as the <code>kube-vip</code> annotation in the example below).</p>
 </div>
 <div class="highlight"><pre><span></span><code><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">k0rdent.mirantis.com/v1alpha1</span>
 <span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ClusterDeployment</span>
 <span class="nt">metadata</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cluster-1</span>
 <span class="nt">spec</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">template</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">vsphere-hosted-cp-0-0-2</span>
+<span class="w">  </span><span class="nt">template</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">vsphere-hosted-cp-0-1-0</span>
 <span class="w">  </span><span class="nt">credential</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">vsphere-credential</span>
 <span class="w">  </span><span class="nt">config</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">clusterLabels</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{}</span>

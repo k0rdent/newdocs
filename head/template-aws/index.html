@@ -994,7 +994,7 @@
         
   
   <span class="md-ellipsis">
-    Using predefined templates
+    Removing predefined templates
   </span>
   
 
@@ -1649,7 +1649,7 @@
 
 <h1 id="aws-template-parameters">AWS template parameters<a class="headerlink" href="#aws-template-parameters" title="Permanent link">#</a></h1>
 <h2 id="aws-ami">AWS AMI<a class="headerlink" href="#aws-ami" title="Permanent link">#</a></h2>
-<p>By default k0rdent looks up the AMI ID automatically, using the latest Amazon Linux 2 image.</p>
+<p>For AWS, by default k0rdent looks up the AMI ID automatically, using the latest Amazon Linux 2 image.</p>
 <p>You can override lookup parameters to search your desired image automatically or you can
 use a specific AMI ID directly.
 If both the AMI ID and lookup parameters are defined, the AMI ID will have higher precedence.</p>
@@ -1687,7 +1687,7 @@ the <code>.imageLookup.format</code> string.</p>
 <h3 id="ssh-keys">SSH keys<a class="headerlink" href="#ssh-keys" title="Permanent link">#</a></h3>
 <p>Only one SSH key is supported and it should be added in AWS prior to creating
 the <code>ClusterDeployment</code> object. The name of the key should then be placed under the <code>.spec.config.sshKeyName</code>.</p>
-<p>The same SSH key will be used for all machines and a bastion host.</p>
+<p>The same SSH key will be used for all machines and a bastion host, or jump box. The bastion host is used as a single entry point that provides access to the rest of the cluster, enabling you to more tightly control access.</p>
 <p>To enable the bastion, set the <code>.spec.config.bastion.enabled</code> option in the
 <code>ClusterDeployment</code> object to <code>true</code>.</p>
 <p>You can get a full list of the bastion configuration options in the <a href="https://cluster-api-aws.sigs.k8s.io/crd/#infrastructure.cluster.x-k8s.io/v1beta1.Bastion">CAPA docs</a>.</p>
@@ -1697,7 +1697,7 @@ the <code>ClusterDeployment</code> object. The name of the key should then be pl
 <span class="nt">metadata</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cluster-1</span>
 <span class="nt">spec</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">template</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">aws-standalone-cp-0-0-5</span>
+<span class="w">  </span><span class="nt">template</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">aws-standalone-cp-0-1-0</span>
 <span class="w">  </span><span class="nt">credential</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">aws-cred</span>
 <span class="w">  </span><span class="nt">config</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">clusterLabels</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{}</span>
@@ -1710,14 +1710,14 @@ the <code>ClusterDeployment</code> object. The name of the key should then be pl
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>
-When deploying EKS cluster please note that
+When deploying an EKS cluster please note that
 <a href="../admin-troubleshooting-aws-vpcs/">additional steps</a> may be needed for proper VPC removal.</p>
 </div>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>
 You may encounter an issue where EKS machines are not created due to the <code>ControlPlaneIsStable</code> preflight check
-failure during EKS cluster deployment. Please follow the
+failure during EKS cluster deployment. Please follow this 
 <a href="../known-issues-eks/#eks-machines-are-not-created-controlplaneisstable-preflight-check-failed">instruction</a>
 to apply the workaround.</p>
 </div>
@@ -1728,7 +1728,7 @@ to apply the workaround.</p>
 <span class="nt">metadata</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cluster-1</span>
 <span class="nt">spec</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">template</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">aws-eks-0-0-3</span>
+<span class="w">  </span><span class="nt">template</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">aws-eks-0-1-0</span>
 <span class="w">  </span><span class="nt">credential</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">aws-cred</span>
 <span class="w">  </span><span class="nt">config</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">clusterLabels</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{}</span>
@@ -1751,16 +1751,13 @@ to apply the workaround.</p>
 <p>Keep in mind that all control plane components for all cluster deployments will
 reside in the management cluster.</p>
 <h2 id="networking">Networking<a class="headerlink" href="#networking" title="Permanent link">#</a></h2>
-<p>The networking resources in AWS which are needed for a cluster deployment can be
+<p>The networking resources needed for a cluster deployment in AWS can be
 reused with a management cluster.</p>
 <p>If you deployed your AWS Kubernetes cluster using Cluster API Provider AWS (CAPA)
-you can obtain all the necessary data with the commands below or use the
+you can get all the necessary data with the commands below, or use the
 template found below in the
 <a href="#kcm-clusterdeployment-manifest-generation">kcm ClusterDeployment manifest generation</a>
 section.</p>
-<p>If using the <code>aws-standalone-cp</code> template to deploy a hosted cluster it is
-recommended to use a <code>t3.large</code> or larger instance type as the <code>kcm-controller</code>
-and other provider controllers will need a large amount of resources to run.</p>
 <p><strong>VPC ID</strong></p>
 <div class="highlight"><pre><span></span><code><span class="w">    </span>kubectl<span class="w"> </span>get<span class="w"> </span>awscluster<span class="w"> </span>&lt;cluster-name&gt;<span class="w"> </span>-o<span class="w"> </span>go-template<span class="o">=</span><span class="s1">&#39;{{.spec.network.vpc.id}}&#39;</span>
 </code></pre></div>
@@ -1779,14 +1776,17 @@ and other provider controllers will need a large amount of resources to run.</p>
 <p>If you want to use different VPCs/regions for your management or managed
 clusters you should setup additional connectivity rules like
 <a href="https://docs.aws.amazon.com/whitepapers/latest/building-scalable-secure-multi-vpc-network-infrastructure/vpc-peering.html">VPC peering</a>.</p>
+<p>If using the <code>aws-standalone-cp</code> template to deploy a hosted cluster, 
+a <code>t3.large</code> or larger instance type is recommended, as the <code>kcm-controller</code>
+and other provider controllers will need a large amount of resources to run.</p>
 <h2 id="kcm-clusterdeployment-manifest">kcm ClusterDeployment manifest<a class="headerlink" href="#kcm-clusterdeployment-manifest" title="Permanent link">#</a></h2>
-<p>With all the collected data your <code>ClusterDeployment</code> manifest will look similar to this:</p>
+<p>With all the collected data your <code>ClusterDeployment</code> manifest will look similar to:</p>
 <div class="highlight"><pre><span></span><code><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">k0rdent.mirantis.com/v1alpha1</span>
 <span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ClusterDeployment</span>
 <span class="nt">metadata</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">aws-hosted-cp</span>
 <span class="nt">spec</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">template</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">aws-hosted-cp-0-0-4</span>
+<span class="w">  </span><span class="nt">template</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">aws-hosted-cp-0-1-0</span>
 <span class="w">  </span><span class="nt">credential</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">aws-credential</span>
 <span class="w">  </span><span class="nt">config</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">clusterLabels</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{}</span>
@@ -1821,7 +1821,7 @@ named <code>clusterdeployment.yaml.tpl</code>:</p>
 <span class="nt">metadata</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">aws-hosted</span>
 <span class="nt">spec</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">template</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">aws-hosted-cp-0-0-4</span>
+<span class="w">  </span><span class="nt">template</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">aws-hosted-cp-0-1-0</span>
 <span class="w">  </span><span class="nt">credential</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">aws-credential</span>
 <span class="w">  </span><span class="nt">config</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">clusterLabels</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{}</span>
