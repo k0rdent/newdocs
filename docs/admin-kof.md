@@ -185,20 +185,19 @@ we're using the most simple but less secure [Static credentials](https://github.
   ```
 
 - Compose the values for `kof-mothership`:
-
-```bash
-cat >mothership-values.yaml <<EOF
-kcm:
-  installTemplates: true
-  kof:
-    clusterProfiles:
-      kof-aws-dns-secrets:
-        matchLabels:
-          k0rdent.mirantis.com/kof-aws-dns-secrets: "true"
-        secrets:
-          - external-dns-aws-credentials
-EOF
-```
+  ```bash
+  cat >mothership-values.yaml <<EOF
+  kcm:
+    installTemplates: true
+    kof:
+      clusterProfiles:
+        kof-aws-dns-secrets:
+          matchLabels:
+            k0rdent.mirantis.com/kof-aws-dns-secrets: "true"
+          secrets:
+            - external-dns-aws-credentials
+  EOF
+  ```
 
 - Why we override some [default values](https://github.com/k0rdent/kof/blob/main/charts/kof-mothership/values.yaml) here:
     - `kcm.installTemplates` installs the templates like `cert-manager` and `kof-storage` into the management cluster. This allows to reference them from `.spec.serviceSpec.services[].template` in AWS `ClusterDeployment` below.
@@ -371,7 +370,8 @@ EOF
 
 - Watch how cluster is deployed to AWS until all `READY` are `True`:
   ```bash
-  clusterctl describe cluster -n kcm-system $STORAGE_CLUSTER_NAME --show-conditions all
+  clusterctl describe cluster -n kcm-system $STORAGE_CLUSTER_NAME \
+    --show-conditions all
   ```
 
 ### Managed Cluster
@@ -474,7 +474,8 @@ EOF
 
 - Watch how cluster is deployed to AWS until all `READY` are `True`:
   ```bash
-  clusterctl describe cluster -n kcm-system $MANAGED_CLUSTER_NAME --show-conditions all
+  clusterctl describe cluster -n kcm-system $MANAGED_CLUSTER_NAME \
+    --show-conditions all
   ```
 
 ### Verification
@@ -492,10 +493,10 @@ kubectl get secret -n kcm-system $MANAGED_CLUSTER_NAME-kubeconfig \
   -o=jsonpath={.data.value} | base64 -d > managed-kubeconfig
 
 KUBECONFIG=storage-kubeconfig kubectl get pod -A
-  # Expected namespaces: cert-manager, ingress-nginx, kof, kube-system, projectsveltos
+  # Namespaces: cert-manager, ingress-nginx, kof, kube-system, projectsveltos
 
 KUBECONFIG=managed-kubeconfig kubectl get pod -A
-  # Expected namespaces: kof, kube-system, projectsveltos
+  # Namespaces: kof, kube-system, projectsveltos
 ```
 Wait for all pods to become `Running`.
 
@@ -505,7 +506,8 @@ If you've opted out of [DNS auto-config](#dns-auto-config) then:
 
 - Get the `EXTERNAL-IP` of `ingress-nginx`:
   ```bash
-  KUBECONFIG=storage-kubeconfig kubectl get svc -n ingress-nginx ingress-nginx-controller
+  KUBECONFIG=storage-kubeconfig kubectl get svc \
+    -n ingress-nginx ingress-nginx-controller
   ```
   It should look like `REDACTED.us-east-2.elb.amazonaws.com`
 
@@ -610,7 +612,8 @@ kubectl port-forward -n kof svc/dashboard 8081:80
 
 ### Uninstallation
 
-- WARNING: This not just uninstalls kof, but also deletes your clusters.
+WARNING:
+- This not just uninstalls kof, but also deletes clusters that may contain your data.
 - Please double check they are demo clusters with no valuable data.
 
 ```bash
