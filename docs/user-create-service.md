@@ -1,10 +1,10 @@
 # Deploy Services to a Managed Cluster
 
-At its heart, everything in k0rdent is based on templates that help define Kubernetes objects. For clusters, these are `ClusterTemplate`s. For applications and services, these are `ServiceTemplate`s.
+At its heart, everything in k0rdent is based on templates that help define Kubernetes objects. For clusters, these are `ClusterTemplate` objects. For applications and services, these are `ServiceTemplate` objects.
 
-## Understanding `ServiceTemplate`s
+## Understanding ServiceTemplates
 
-`ServiceTemplate`s are meant to let k0rdent know where to find a Helm chart with instructions for installing
+`ServiceTemplate` objects are meant to let k0rdent know where to find a Helm chart with instructions for installing
 an application. In many cases, these charts will be in a private repository.  For example, consider this template for
 installing Nginx Ingress:
 
@@ -41,15 +41,14 @@ Here you see a template called `project-ingress-nginx-4.11.0` that is meant to b
 The `.spec.helm.chartSpec` specifies the name of the Helm chart and where to find it, as well as the version and other 
 important information. The `ServiceTemplateChain` shows that this template is also an upgrade path from version 4.10.0.
 
-If you wanted to deploy this as an application, you would first go ahead and add it to the cluster in which you were
-working, so if you were to save this YAML to a file called `project-ingress.yaml` you could run this command on the management cluster:
+If you wanted to deploy this as an application, you would first go ahead and add the template to the cluster in which you were working, so if you were to save this YAML to a file called `project-ingress.yaml` you could run this command on the management cluster:
 
 ```shell
 kubectl apply -f project-ingress.yaml -n tenant42
 ```
 ## Adding a `Service` to a `ClusterDeployment`
 
-To add the service defined by this template to a cluster, you would simply add it to the `ClusterDeployment` object
+To add the service defined by this template to a cluster, you simply add it to the `ClusterDeployment` object
 when you create it, as in:
 
 ```yaml
@@ -61,7 +60,7 @@ metadata:
 spec:
   config:
     clusterLabels: {}
-  template: aws-standalone-cp-0-0-3
+  template: aws-standalone-cp-0-1-0
   credential: aws-credential
   serviceSpec:
     services:
@@ -125,10 +124,10 @@ spec:
         name: ingress-nginx
         namespace: ingress-nginx
     priority: 100
-  template: aws-standalone-cp-0-0-6
+  template: aws-standalone-cp-0-1-0
 ```
 
-In the example above the fields under `serviceSpec` are relevant to the deployment of beach-head services.
+In the example above, the fields under `serviceSpec` are relevant to the deployment of beach-head services.
 
 > NOTE:
 > Refer to the [Template Guide](template-intro.md) for more detail about these fields.
@@ -159,7 +158,7 @@ For more details see the [Bring your own Templates](template-byo.md) guide.
 
 ### Configuring Custom Values
 
-Helm values can be passed to each beach-head services with the `.spec.serviceSpec.services[].values` field in the `ClusterDeployment` or `MultiClusterService` object. For example:
+Helm values can be passed to each beach-head service with the `.spec.serviceSpec.services[].values` field in the `ClusterDeployment` or `MultiClusterService` object. For example:
 
 ```yaml
 apiVersion: k0rdent.mirantis.com/v1alpha1
@@ -201,8 +200,9 @@ spec:
             host: grafana.kcm0.example.net
    . . .
 ```
-> NOTE: The values for ingress-nginx and kyverno start with the "ingress-nginx:" and "kyverno:" keys respectively because
-> the helm charts used by the ingress-nginx-4-11-3 and kyverno-3-2-6 `ServiceTemplates` use the official upstream
+> NOTE: 
+> The values for ingress-nginx and kyverno start with the "ingress-nginx:" and "kyverno:" keys respectively because
+> the helm charts used by the ingress-nginx-4-11-3 and kyverno-3-2-6 `ServiceTemplate` objects use the official upstream
 > helm charts for ingress-nginx and kyverno as dependencies.
 
 ### Templating Custom Values
@@ -237,7 +237,7 @@ In this case, the host and port information will be fetched from the spec of the
 ## Checking status
 
 The `.status.services` field of the `ClusterDeployment` object shows the status for each of the beach-head services.
-For example, if you were to `describe` the `ClusterDeployment` with these services, you would see `condition`s that show
+For example, if you were to `describe` the `ClusterDeployment` with these services, you would see conditions that show
 status information, as in:
 
 ```yaml
@@ -305,8 +305,8 @@ NAME                                       READY   STATUS    RESTARTS   AGE
 ingress-nginx-controller-cbcf8bf58-zhvph   1/1     Running   0          24m
 ```
 
-Youc an get more information on how to access the managed cluster in the [create a cluster deployment](admin-creating-clusters.md)
-chapter, and more on `ServiceTemplate`s in the [Template Guide](template-intro.md).
+Youc an get more information on how to access the child cluster in the [create a cluster deployment](admin-creating-clusters.md)
+chapter, and more on `ServiceTemplate` objects in the [Template Guide](template-intro.md).
 
 ## Removing beach-head services
 

@@ -1,18 +1,18 @@
 # Deploying a Cluster
 
-k0rdent simplifies the process of deploying and managing Kubernetes clusters across various cloud platforms through the use of `ClusterDeployment`s, which include all of the information k0rdent needs to know in order to create the cluster you want. This `ClusterDeployment` system relies on predefined templates and credentials. 
+k0rdent simplifies the process of deploying and managing Kubernetes clusters across various cloud platforms through the use of `ClusterDeployment` objects, which include all of the information k0rdent needs to know in order to create the cluster you want. This `ClusterDeployment` system relies on predefined templates and credentials. 
 
 A cluster deployment typically involves:
 
-1. Credentials for the infrastructure provider (e.g. AWS, vSphere, etc).
-2. A template that defines the desired cluster configuration (for example, number of nodes, instance types).
+1. Credentials for the infrastructure provider (such as AWS, vSphere, and so on).
+2. A template that defines the desired cluster configuration (for example, number of nodes or instance types).
 3. Submitting the configuration for deployment and monitoring the process.
 
 Follow these steps to deploy a standalone Kubernetes cluster:
 
 1. Obtain the `Credential` object
 
-    k0rdent needs credentials to communicate with the infrastructure provider (for example, AWS, Azure, vSphere). These credentials enable k0rdent to provision resources such as virtual machines, networking components, and storage.
+    k0rdent needs credentials to communicate with the infrastructure provider (for example, AWS, Azure, or vSphere). These credentials enable k0rdent to provision resources such as virtual machines, networking components, and storage.
 
     `Credential` objects are generally created ahead of time and made available to users. You can see all of the existing `Credential` objects by querying the management cluster:
 
@@ -28,23 +28,23 @@ Follow these steps to deploy a standalone Kubernetes cluster:
     You'll see the YAML for the `Credential` object, as in:
 
     ```yaml
-	apiVersion: k0rdent.mirantis.com/v1alpha1
-	kind: Credential
-	metadata:
-	  name: accounting-cluster-credential
-	  namespace: accounting
-	spec:
-  	  description: "Credentials for Accounting AWS account"
-	  identityRef:
-	    apiVersion: infrastructure.cluster.x-k8s.io/v1beta2
-	    kind: AWSClusterStaticIdentity
-	    name: accountingd-cluster-identity
-	```
+    apiVersion: k0rdent.mirantis.com/v1alpha1
+    kind: Credential
+    metadata:
+      name: accounting-cluster-credential
+      namespace: accounting
+    spec:
+        description: "Credentials for Accounting AWS account"
+      identityRef:
+        apiVersion: infrastructure.cluster.x-k8s.io/v1beta2
+        kind: AWSClusterStaticIdentity
+        name: accountingd-cluster-identity
+    ```
 
     As you can see, the `.spec.description` field gives more information about the `Credential`.
 
     If the `Credential` you need doesn't yet exist, you can ask your cloud administrator to create it, or you can
-    follow the instructions in the [Credential System](admin-credentials.md), as well as the specific instructions for your [target infrastructure](admin-prepare.md), to crete it yourself.
+    follow the instructions in the [Credential System](admin-credentials.md), as well as the specific instructions for your [target infrastructure](admin-prepare.md), to create it yourself.
 
     > TIP: 
     > Double-check to make sure that your credentials have sufficient permissions to create resources on the target infrastructure.
@@ -53,9 +53,9 @@ Follow these steps to deploy a standalone Kubernetes cluster:
 
     Templates in k0rdent are predefined configurations that describe how to set up the cluster. Templates include details such as:
 
-    - The number and type of control plane and worker nodes.
-    - Networking settings.
-    - Regional deployment preferences.
+    * The number and type of control plane and worker nodes.
+    * Networking settings.
+    * Regional deployment preferences.
 
     Templates act as a blueprint for creating a cluster. To see the list of available templates, use the following command:
 
@@ -64,22 +64,22 @@ Follow these steps to deploy a standalone Kubernetes cluster:
     ```
     ```console
     NAMESPACE    NAME                            VALID
-    kcm-system   adopted-cluster-0-0-2           true
-    kcm-system   aws-eks-0-0-3                   true
-    kcm-system   aws-hosted-cp-0-0-4             true
-    kcm-system   aws-standalone-cp-0-0-5         true
-    kcm-system   azure-aks-0-0-2                 true
-    kcm-system   azure-hosted-cp-0-0-4           true
-    kcm-system   azure-standalone-cp-0-0-5       true
-    kcm-system   openstack-standalone-cp-0-0-2   true
-    kcm-system   vsphere-hosted-cp-0-0-5         true
-    kcm-system   vsphere-standalone-cp-0-0-5     true
+    kcm-system   adopted-cluster-0-1-0           true
+    kcm-system   aws-eks-0-1-0                   true
+    kcm-system   aws-hosted-cp-0-1-0             true
+    kcm-system   aws-standalone-cp-0-1-0         true
+    kcm-system   azure-aks-0-1-0                 true
+    kcm-system   azure-hosted-cp-0-1-0           true
+    kcm-system   azure-standalone-cp-0-1-0       true
+    kcm-system   openstack-standalone-cp-0-1-0   true
+    kcm-system   vsphere-hosted-cp-0-1-0         true
+    kcm-system   vsphere-standalone-cp-0-1-0     true
     ```
 
     You can then get information on the actual template by describing it, as in:
 
     ```shell
-    kubectl describe clustertemplate aws-standalone-cp-0-0-5 -n kcm-system
+    kubectl describe clustertemplate aws-standalone-cp-0-1-0 -n kcm-system
     ```
 
 3. Create a ClusterDeployment YAML Configuration
@@ -87,9 +87,9 @@ Follow these steps to deploy a standalone Kubernetes cluster:
     Once you have the `Credential` and the `ClusterTemplate` you can create the `ClusterDeployment` object configuration. 
     It includes:
 
-    - The template to use.
-    - The credentials for the infrastructure provider.
-    - Optional customizations such as instance types, regions, and networking.
+    * The template to use.
+    * The credentials for the infrastructure provider.
+    * Optional customizations such as instance types, regions, and networking.
 
     Create a `ClusterDeployment` configuration in a YAML file, following this structure:
 
@@ -116,7 +116,7 @@ Follow these steps to deploy a standalone Kubernetes cluster:
       name: my-cluster-deployment
       namespace: kcm-system
     spec:
-      template: aws-standalone-cp-0-0-3
+      template: aws-standalone-cp-0-1-0
       credential: aws-credential
       config:
         clusterLabels: {}
@@ -150,7 +150,7 @@ Follow these steps to deploy a standalone Kubernetes cluster:
 
 6. Monitor Provisioning
 
-    k0rdent will now start provisioning resources (e.g., VMs, networks) and setting up the cluster. To monitor this process, run:
+    k0rdent will now start provisioning resources (for example, VMs or networks) and setting up the cluster. To monitor this process, run:
 
     ```shell
     kubectl -n <namespace> get cluster <cluster-name> -o=yaml
