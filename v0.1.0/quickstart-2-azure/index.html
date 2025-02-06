@@ -901,6 +901,27 @@
   
   
     <li class="md-nav__item">
+      <a href="../admin-kof/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    k0rdent Observability & FinOps
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../admin-upgrading-k0rdent/" class="md-nav__link">
         
   
@@ -1510,6 +1531,90 @@
   
 
     
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10" >
+        
+          
+          <label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Contributing
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_10">
+            <span class="md-nav__icon md-icon"></span>
+            Contributing
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../k0rdent-documentation-contributors-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    k0rdent documentation contributor's guide
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../k0rdent-documentation-style-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    k0rdent documentation style guide
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
   </ul>
 </nav>
                   </div>
@@ -1847,7 +1952,10 @@ For managed (AKS) clusters on Azure create the `Secret` with the `AZURE_CLIENT_I
 For AKS clusters, the `.spec.identityRef.kind` must be set to `Secret`, and `.spec.name` must match
 `.metadata.name` of the `Secret` object.
 
-<div class="highlight"><pre><span></span><code><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">k0rdent.mirantis.com/v1alpha1</span>
+Note: for AKS we also need to create Cluster Identity resource template ConfigMap
+
+<div class="highlight"><pre><span></span><code><span class="nn">---</span>
+<span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">k0rdent.mirantis.com/v1alpha1</span>
 <span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Credential</span>
 <span class="nt">metadata</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">azure-aks-credential</span>
@@ -1858,6 +1966,16 @@ For AKS clusters, the `.spec.identityRef.kind` must be set to `Secret`, and `.sp
 <span class="w">    </span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Secret</span>
 <span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">azure-aks-credential</span>
 <span class="w">    </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kcm-system</span>
+<span class="nn">---</span>
+<span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">v1</span>
+<span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ConfigMap</span>
+<span class="nt">metadata</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">azure-aks-credential-resource-template</span>
+<span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kcm-system</span>
+<span class="w">  </span><span class="nt">labels</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">k0rdent.mirantis.com/component</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;kcm&quot;</span>
+<span class="w">  </span><span class="nt">annotations</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">projectsveltos.io/template</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;true&quot;</span>
 </code></pre></div>
 -->
 <p>Apply the YAML to your cluster:</p>
@@ -1955,8 +2073,7 @@ For AKS clusters, the `ClusterDeployment` looks like this:
 <div class="highlight"><pre><span></span><code>kubectl<span class="w"> </span>-n<span class="w"> </span>kcm-system<span class="w"> </span>get<span class="w"> </span>secret<span class="w"> </span>my-azure-clusterdeployment1-kubeconfig<span class="w"> </span>-o<span class="w"> </span><span class="nv">jsonpath</span><span class="o">=</span><span class="s1">&#39;{.data.value}&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>base64<span class="w"> </span>-d<span class="w"> </span>&gt;<span class="w"> </span>my-azure-clusterdeployment1-kubeconfig.kubeconfig
 </code></pre></div>
 <p>And you can use the kubeconfig to see what's running on the cluster:</p>
-<div class="highlight"><pre><span></span><code><span class="nv">KUBECONFIG</span><span class="o">=</span><span class="s2">&quot;my-azure-clusterdeployment1-kubeconfig.kubeconfig&quot;</span>
-kubectl<span class="w"> </span>get<span class="w"> </span>pods<span class="w"> </span>-A
+<div class="highlight"><pre><span></span><code><span class="nv">KUBECONFIG</span><span class="o">=</span><span class="s2">&quot;my-azure-clusterdeployment1-kubeconfig.kubeconfig&quot;</span><span class="w"> </span>kubectl<span class="w"> </span>get<span class="w"> </span>pods<span class="w"> </span>-A
 </code></pre></div>
 <h2 id="list-child-clusters">List child clusters<a class="headerlink" href="#list-child-clusters" title="Permanent link">#</a></h2>
 <p>To verify the presence of the child cluster, list the available <code>ClusterDeployment</code> objects:</p>

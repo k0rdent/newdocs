@@ -717,6 +717,27 @@
   
   
     <li class="md-nav__item">
+      <a href="../admin-kof/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    k0rdent Observability & FinOps
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../admin-upgrading-k0rdent/" class="md-nav__link">
         
   
@@ -1576,6 +1597,90 @@
   
 
     
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10" >
+        
+          
+          <label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Contributing
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_10">
+            <span class="md-nav__icon md-icon"></span>
+            Contributing
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../k0rdent-documentation-contributors-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    k0rdent documentation contributor's guide
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../k0rdent-documentation-style-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    k0rdent documentation style guide
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
   </ul>
 </nav>
                   </div>
@@ -1960,13 +2065,28 @@ to the location created earlier:</p>
 components required for other components creation, and all the required resources
 of <code>CAPI</code> and the <code>ClusterDeployment</code>s currently in use in the management cluster.</p>
 <p>By default, objects satisfying these labels will be included in the backup:</p>
-<div class="highlight"><pre><span></span><code>cluster.x-k8s.io/cluster-name=&quot;cluster-deployment-name&quot;
+<div class="highlight"><pre><span></span><code>cluster.x-k8s.io/cluster-name=&quot;&lt;cluster-deployment-name&gt;&quot;
+helm.toolkit.fluxcd.io/name=&quot;&lt;cluster-deployment-name&gt;&quot;
+
+cluster.x-k8s.io/provider=&quot;bootstrap-&lt;provider&gt;&quot;
+cluster.x-k8s.io/provider=&quot;control-plane-&lt;provider&gt;&quot;
+cluster.x-k8s.io/provider=&quot;infrastructure-&lt;provider&gt;&quot;
+
+cluster.x-k8s.io/provider=&quot;cluster-api&quot;
+
+controller.cert-manager.io/fao=&quot;true&quot;
+
+k0rdent.mirantis.com/component=&quot;kcm&quot;
+</code></pre></div>
+<p>An example sorted set of labels, objects satisfying these labels will
+be included in the backup:</p>
+<div class="highlight"><pre><span></span><code>cluster.x-k8s.io/cluster-name=&quot;some-cluster-deployment-name&quot;
 cluster.x-k8s.io/provider=&quot;bootstrap-k0sproject-k0smotron&quot;
 cluster.x-k8s.io/provider=&quot;cluster-api&quot;
 cluster.x-k8s.io/provider=&quot;control-plane-k0sproject-k0smotron&quot;
 cluster.x-k8s.io/provider=&quot;infrastructure-aws&quot;
 controller.cert-manager.io/fao=&quot;true&quot;
-helm.toolkit.fluxcd.io/name=&quot;cluster-deployment-name&quot;
+helm.toolkit.fluxcd.io/name=&quot;some-cluster-deployment-name&quot;
 k0rdent.mirantis.com/component=&quot;kcm&quot;
 </code></pre></div>
 <h2 id="restoration">Restoration<a class="headerlink" href="#restoration" title="Permanent link">#</a></h2>

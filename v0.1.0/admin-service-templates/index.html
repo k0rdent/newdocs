@@ -727,6 +727,27 @@
   
   
     <li class="md-nav__item">
+      <a href="../admin-kof/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    k0rdent Observability & FinOps
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../admin-upgrading-k0rdent/" class="md-nav__link">
         
   
@@ -1336,6 +1357,90 @@
   
 
     
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10" >
+        
+          
+          <label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Contributing
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_10">
+            <span class="md-nav__icon md-icon"></span>
+            Contributing
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../k0rdent-documentation-contributors-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    k0rdent documentation contributor's guide
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../k0rdent-documentation-style-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    k0rdent documentation style guide
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
   </ul>
 </nav>
                   </div>
@@ -1413,11 +1518,11 @@ and use it to deploy an application to a k0rdent child cluster.</p>
 <span class="w">      </span><span class="nt">interval</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10m0s</span>
 <span class="w">      </span><span class="nt">sourceRef</span><span class="p">:</span>
 <span class="w">        </span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">HelmRepository</span>
-<span class="w">        </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">k0rdent-templates</span>
+<span class="w">        </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">k0rdent-catalog</span>
 </code></pre></div>
 <p>In this case, we're creating a <code>ServiceTemplate</code> called <code>ingress-nginx-4.11.3</code> in the
 <code>my-target-namespace</code> namespace.  It references version 4.11.3 of the <code>ingress-nginx</code> chart
-located in the <code>k0rdent-templates</code> Helm repository.</p>
+located in the <code>k0rdent-catalog</code> Helm repository.</p>
 <p>For more information on creating templates, see the <a href="../template-intro/">Template Guide</a>.</p>
 </li>
 <li>
@@ -1450,24 +1555,24 @@ when you create it, as in:</p>
 <p><div class="highlight"><pre><span></span><code><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">k0rdent.mirantis.com/v1alpha1</span>
 <span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ClusterDeployment</span>
 <span class="nt">metadata</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">my-managed-cluster</span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">my-cluster-deployment</span>
 <span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">tenant42</span>
 <span class="nt">spec</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">config</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">clusterLabels</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{}</span>
 <span class="w">  </span><span class="nt">template</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">aws-standalone-cp-0-1-0</span>
 <span class="w">  </span><span class="nt">credential</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">aws-credential</span>
-<span class="w">  </span><span class="nt">services</span><span class="p">:</span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">template</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">project-ingress-nginx-4.11.3</span>
-<span class="w">      </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ingress-nginx</span>
-<span class="w">      </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">my-target-namespace</span>
-<span class="w">  </span><span class="nt">servicesPriority</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">100</span>
-<span class="w">  </span><span class="nt">stopOnConflict</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="w">  </span><span class="nt">serviceSpec</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">services</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">template</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">project-ingress-nginx-4.11.3</span>
+<span class="w">        </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ingress-nginx</span>
+<span class="w">        </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">my-target-namespace</span>
+<span class="w">    </span><span class="nt">priority</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">100</span>
 </code></pre></div>
-As you can see, you're simply referencing the template in the <code>.spec.services.template</code> field of the <code>ClusterDeployment</code>
+As you can see, you're simply referencing the template in the <code>.spec.serviceSpec.services[].template</code> field of the <code>ClusterDeployment</code>
 to tell k0rdent that you want this service to be part of this cluster.</p>
 <p>If you wanted to add this service to an existing cluster, you would simply patch the definition of the <code>ClusterDeployment</code>, as in:</p>
-<p><div class="highlight"><pre><span></span><code>kubectl<span class="w"> </span>patch<span class="w"> </span>clusterdeployment<span class="w"> </span>my-managed-cluster<span class="w"> </span>-n<span class="w"> </span>my-target-namespace<span class="w"> </span>--type<span class="o">=</span><span class="s1">&#39;merge&#39;</span><span class="w"> </span>-p<span class="w"> </span><span class="s1">&#39;{&quot;spec&quot;:{&quot;services&quot;:[{&quot;template&quot;:&quot;project-ingress-nginx-4.11.3&quot;,&quot;name&quot;:&quot;ingress-nginx&quot;,&quot;namespace&quot;:&quot;my-target-namespace&quot;}]}}&#39;</span>
+<p><div class="highlight"><pre><span></span><code>kubectl<span class="w"> </span>patch<span class="w"> </span>clusterdeployment<span class="w"> </span>my-cluster-deployment<span class="w"> </span>-n<span class="w"> </span>my-target-namespace<span class="w"> </span>--type<span class="o">=</span><span class="s1">&#39;merge&#39;</span><span class="w"> </span>-p<span class="w"> </span><span class="s1">&#39;{&quot;spec&quot;:{&quot;services&quot;:[{&quot;template&quot;:&quot;project-ingress-nginx-4.11.3&quot;,&quot;name&quot;:&quot;ingress-nginx&quot;,&quot;namespace&quot;:&quot;my-target-namespace&quot;}]}}&#39;</span>
 </code></pre></div>
 For more information on creating and using <code>ServiceTemplate</code> objects, see the <a href="../user-create-service/">User Guide</a>.</p>
 </li>

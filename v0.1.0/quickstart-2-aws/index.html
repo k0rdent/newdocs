@@ -526,6 +526,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#configure-aws-iam-for-k0rdent" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configure AWS IAM for k0rdent
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#attach-iam-policies-to-the-k0rdent-user" class="md-nav__link">
     <span class="md-ellipsis">
       Attach IAM policies to the k0rdent user
@@ -538,15 +547,6 @@
   <a href="#create-aws-credentials-for-the-k0rdent-user" class="md-nav__link">
     <span class="md-ellipsis">
       Create AWS credentials for the k0rdent user
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#configure-aws-iam-for-k0rdent" class="md-nav__link">
-    <span class="md-ellipsis">
-      Configure AWS IAM for k0rdent
     </span>
   </a>
   
@@ -574,6 +574,15 @@
   <a href="#create-the-k0rdent-cluster-manager-credential-object" class="md-nav__link">
     <span class="md-ellipsis">
       Create the k0rdent Cluster Manager credential object
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#create-the-k0rdent-cluster-identity-resource-template-configmap" class="md-nav__link">
+    <span class="md-ellipsis">
+      Create the k0rdent Cluster Identity resource template ConfigMap
     </span>
   </a>
   
@@ -894,6 +903,27 @@
   
   <span class="md-ellipsis">
     Creating multi-cluster services
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../admin-kof/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    k0rdent Observability & FinOps
   </span>
   
 
@@ -1519,6 +1549,90 @@
   
 
     
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10" >
+        
+          
+          <label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Contributing
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_10">
+            <span class="md-nav__icon md-icon"></span>
+            Contributing
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../k0rdent-documentation-contributors-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    k0rdent documentation contributor's guide
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../k0rdent-documentation-style-guide/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    k0rdent documentation style guide
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
   </ul>
 </nav>
                   </div>
@@ -1582,6 +1696,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#configure-aws-iam-for-k0rdent" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configure AWS IAM for k0rdent
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#attach-iam-policies-to-the-k0rdent-user" class="md-nav__link">
     <span class="md-ellipsis">
       Attach IAM policies to the k0rdent user
@@ -1594,15 +1717,6 @@
   <a href="#create-aws-credentials-for-the-k0rdent-user" class="md-nav__link">
     <span class="md-ellipsis">
       Create AWS credentials for the k0rdent user
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#configure-aws-iam-for-k0rdent" class="md-nav__link">
-    <span class="md-ellipsis">
-      Configure AWS IAM for k0rdent
     </span>
   </a>
   
@@ -1630,6 +1744,15 @@
   <a href="#create-the-k0rdent-cluster-manager-credential-object" class="md-nav__link">
     <span class="md-ellipsis">
       Create the k0rdent Cluster Manager credential object
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#create-the-k0rdent-cluster-identity-resource-template-configmap" class="md-nav__link">
+    <span class="md-ellipsis">
+      Create the k0rdent Cluster Identity resource template ConfigMap
     </span>
   </a>
   
@@ -1771,6 +1894,10 @@ sudo<span class="w"> </span>install<span class="w"> </span>-o<span class="w"> </
 <span class="go">    }</span>
 <span class="go">}</span>
 </code></pre></div>
+<h2 id="configure-aws-iam-for-k0rdent">Configure AWS IAM for k0rdent<a class="headerlink" href="#configure-aws-iam-for-k0rdent" title="Permanent link">#</a></h2>
+<p>Before k0rdent CAPI can manage resources on AWS, you need to use <code>clusterawsadm</code> to create a bootstrap CloudFormation stack with additional IAM policies and a service account. You do this under the administrative account credentials you earlier exported to the management node environment:</p>
+<div class="highlight"><pre><span></span><code>clusterawsadm<span class="w"> </span>bootstrap<span class="w"> </span>iam<span class="w"> </span>create-cloudformation-stack
+</code></pre></div>
 <h2 id="attach-iam-policies-to-the-k0rdent-user">Attach IAM policies to the k0rdent user<a class="headerlink" href="#attach-iam-policies-to-the-k0rdent-user" title="Permanent link">#</a></h2>
 <p>Next, we'll attach appropriate policies to the k0rdent user. These are:</p>
 <ul>
@@ -1864,10 +1991,6 @@ And you'll see output that looks like this (this is non-valid example text):</p>
 > to apply the workaround.
 -->
 
-<h2 id="configure-aws-iam-for-k0rdent">Configure AWS IAM for k0rdent<a class="headerlink" href="#configure-aws-iam-for-k0rdent" title="Permanent link">#</a></h2>
-<p>Before k0rdent CAPI can manage resources on AWS, you need to use <code>clusterawsadm</code> to create a bootstrap CloudFormation stack with additional IAM policies and a service account. You do this under the administrative account credentials you earlier exported to the management node environment:</p>
-<div class="highlight"><pre><span></span><code>clusterawsadm<span class="w"> </span>bootstrap<span class="w"> </span>iam<span class="w"> </span>create-cloudformation-stack
-</code></pre></div>
 <h2 id="create-iam-credentials-secret-on-the-management-cluster">Create IAM credentials secret on the management cluster<a class="headerlink" href="#create-iam-credentials-secret-on-the-management-cluster" title="Permanent link">#</a></h2>
 <p>Next, we create a <code>Secret' containing credentials for the k0rdent user and apply this to the management cluster running k0rdent, in the</code>kcm-system<code>namespace (important: if you use another namespace, k0rdent will be unable to read the credentials). To do this, create the following YAML in a file called</code>aws-cluster-identity-secret.yaml':</p>
 <div class="highlight"><pre><span></span><code><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">v1</span>
@@ -1906,7 +2029,7 @@ And you'll see output that looks like this (this is non-valid example text):</p>
 <div class="highlight"><pre><span></span><code>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>aws-cluster-identity.yaml<span class="w">  </span>-n<span class="w"> </span>kcm-system
 </code></pre></div>
 <h2 id="create-the-k0rdent-cluster-manager-credential-object">Create the k0rdent Cluster Manager credential object<a class="headerlink" href="#create-the-k0rdent-cluster-manager-credential-object" title="Permanent link">#</a></h2>
-<p>Now we create the k0rdent Cluster Manager credential object. As in prior steps, create a YAML file called `aws-cluster-identity-cred.yaml':</p>
+<p>Now we create the k0rdent Cluster Manager credential object. As in prior steps, create a YAML file called <code>aws-cluster-identity-cred.yaml</code>:</p>
 <div class="highlight"><pre><span></span><code><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">k0rdent.mirantis.com/v1alpha1</span>
 <span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Credential</span>
 <span class="nt">metadata</span><span class="p">:</span>
@@ -1922,6 +2045,22 @@ And you'll see output that looks like this (this is non-valid example text):</p>
 <p>Note that <code>.spec.identityRef.kind</code> must be <code>AWSClusterStaticIdentity</code> and <code>.spec.identityRef.name</code> must match the <code>.metadata.name</code> of the <code>AWSClusterStaticIdentity</code> object.</p>
 <p>Now apply this YAML to your management cluster:</p>
 <div class="highlight"><pre><span></span><code>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>aws-cluster-identity-cred.yaml<span class="w"> </span>-n<span class="w"> </span>kcm-system
+</code></pre></div>
+<h2 id="create-the-k0rdent-cluster-identity-resource-template-configmap">Create the k0rdent Cluster Identity resource template ConfigMap<a class="headerlink" href="#create-the-k0rdent-cluster-identity-resource-template-configmap" title="Permanent link">#</a></h2>
+<p>Now we create the k0rdent Cluster Identity resource template <code>ConfigMap</code>. As in prior steps, create a YAML file called <code>aws-cluster-identity-resource-template.yaml</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">v1</span>
+<span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ConfigMap</span>
+<span class="nt">metadata</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">aws-cluster-identity-resource-template</span>
+<span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kcm-system</span>
+<span class="w">  </span><span class="nt">labels</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">k0rdent.mirantis.com/component</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;kcm&quot;</span>
+<span class="w">  </span><span class="nt">annotations</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">projectsveltos.io/template</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;true&quot;</span>
+</code></pre></div>
+<p>Note that <code>ConfigMap</code> is empty, this is expected, we don't need to template any object inside child cluster(s), but we can use that object in the future if need arises.</p>
+<p>Now apply this YAML to your management cluster:</p>
+<div class="highlight"><pre><span></span><code>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>aws-cluster-identity-resource-template.yaml<span class="w"> </span>-n<span class="w"> </span>kcm-system
 </code></pre></div>
 <h2 id="list-available-cluster-templates">List available cluster templates<a class="headerlink" href="#list-available-cluster-templates" title="Permanent link">#</a></h2>
 <p>k0rdent is now fully configured to manage AWS. To create a cluster, begin by listing the available <code>ClusterTemplate</code> objects provided with k0rdent:</p>
@@ -1977,8 +2116,7 @@ And you'll see output that looks like this (this is non-valid example text):</p>
 <div class="highlight"><pre><span></span><code>kubectl<span class="w"> </span>-n<span class="w"> </span>kcm-system<span class="w"> </span>get<span class="w"> </span>secret<span class="w"> </span>my-aws-clusterdeployment1-kubeconfig<span class="w"> </span>-o<span class="w"> </span><span class="nv">jsonpath</span><span class="o">=</span><span class="s1">&#39;{.data.value}&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>base64<span class="w"> </span>-d<span class="w"> </span>&gt;<span class="w"> </span>my-aws-clusterdeployment1-kubeconfig.kubeconfig
 </code></pre></div>
 <p>And you can use the <code>kubeconfig</code> to see what's running on the cluster:</p>
-<div class="highlight"><pre><span></span><code><span class="nv">KUBECONFIG</span><span class="o">=</span><span class="s2">&quot;my-aws-clusterdeployment1-kubeconfig.kubeconfig&quot;</span>
-kubectl<span class="w"> </span>get<span class="w"> </span>pods<span class="w"> </span>-A
+<div class="highlight"><pre><span></span><code><span class="nv">KUBECONFIG</span><span class="o">=</span><span class="s2">&quot;my-aws-clusterdeployment1-kubeconfig.kubeconfig&quot;</span><span class="w"> </span>kubectl<span class="w"> </span>get<span class="w"> </span>pods<span class="w"> </span>-A
 </code></pre></div>
 <h2 id="list-child-clusters">List child clusters<a class="headerlink" href="#list-child-clusters" title="Permanent link">#</a></h2>
 <p>To verify the presence of the child cluster, list the available <code>ClusterDeployment</code> objects:</p>
