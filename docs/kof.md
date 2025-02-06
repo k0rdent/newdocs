@@ -43,8 +43,11 @@ management cluster_____________________
 │                                     │
 │  kof-mothership chart_____________  │
 │  │                               │  │
-│  │ centralized Grafana & storage │  │
-│  │                               │  │
+│  │ grafana-operator              │  │
+│  │ victoria-metrics-operator     │  │
+│  │ cluster-api-visualizer        │  │
+│  │ sveltos-dashboard             │  │
+│  │ k0rdent service templates     │  │
 │  │ promxy                        │  │
 │  │_______________________________│  │
 │                                     │
@@ -64,21 +67,26 @@ cloud 1...
 .  │  │                                  │          │  │
 .  │  │  kof-storage chart_____________  │          │  .
    │  │  │                            │  │          │  .
-   │  │  │ regional Grafana & storage │  │          │  .
+   │  │  │ grafana-operator           │  │          │  .
+   │  │  │ victoria-metrics-operator  │  │          │
+   │  │  │ victoria-logs-single       │  │          │
+   │  │  │ external-dns               │  │          │
    │  │  │____________________________│  │          │
    │  │                                  │          │
-   │  │  cert-manager                    │          │
+   │  │  cert-manager (grafana, vmauth)  │          │
    │  │  ingress-nginx                   │          │
    │  │__________________________________│          │
    │                                                │
    │                                                │
    │  managed cluster 1_____________________  2...  │
    │  │                                    │  │     │
-   │  │  kof-operators chart_____________  │  │     │
-   │  │  │                              │  │  │     │
+   │  │  cert-manager (OTel-operator)      │  │     │
+   │  │                                    │  │     │
+   │  │  kof-operators chart_____________  │  .     │
+   │  │  │                              │  │  .     │
    │  │  │  opentelemetry-operator____  │  │  .     │
-   │  │  │  │                        │  │  │  .     │
-   │  │  │  │ OpenTelemetryCollector │  │  │  .     │
+   │  │  │  │                        │  │  │        │
+   │  │  │  │ OpenTelemetryCollector │  │  │        │
    │  │  │  │________________________│  │  │        │
    │  │  │                              │  │        │
    │  │  │  prometheus-operator-crds    │  │        │
@@ -106,8 +114,8 @@ cloud 1...
 
 - Centralized [Grafana](https://grafana.com/) dashboard, managed by [grafana-operator](https://github.com/grafana/grafana-operator)
 - Local [VictoriaMetrics](https://victoriametrics.com/) storage for alerting rules only, managed by [victoria-metrics-operator](https://docs.victoriametrics.com/operator/)
-- [Sveltos](https://projectsveltos.github.io/sveltos/) dashboard, automatic secret distribution
 - [cluster-api-visualizer](https://github.com/Jont828/cluster-api-visualizer) for insight into multicluster configuration
+- [Sveltos](https://projectsveltos.github.io/sveltos/) dashboard, automatic secret distribution
 - [k0rdent](https://github.com/k0rdent) service templates to deploy other charts to regional clusters
 - [Promxy](https://github.com/jacksontj/promxy) for aggregating Prometheus metrics from regional clusters
 
@@ -128,7 +136,7 @@ cloud 1...
 ### kof-collectors
 
 - [prometheus-node-exporter](https://prometheus.io/docs/guides/node-exporter/) for hardware and OS metrics
-- [kube-state-metrics](https://github.com/kubernetes/kube-state-metrics) (KSM) for metrics about the state of Kubernetes objects
+- [kube-state-metrics](https://github.com/kubernetes/kube-state-metrics) for metrics about the state of Kubernetes objects
 - [OpenCost](https://www.opencost.io/) "shines a light into the black box of Kubernetes spend"
 
 ## Installation
@@ -136,9 +144,10 @@ cloud 1...
 ### Prerequisites
 
 - k0rdent management cluster - [quickstart guide](https://docs.k0rdent.io/v0.1.0/quickstart-1-mgmt-node-and-cluster/)
+    - To test on [macOS](https://docs.k0sproject.io/stable/system-requirements/#host-operating-system):
+      `brew install kind && kind create cluster -n k0rdent`
 - Infrastructure provider credentials, e.g. [guide for AWS](https://docs.k0rdent.io/v0.1.0/quickstart-2-aws/)
     - Skip the "Create your ClusterDeployment" and later sections.
-    - Ensure you've created [aws-cluster-identity-resource-template](https://github.com/k0rdent/kcm/blob/0acc940a746b733ef099169ee6247e1cc92bd041/config/dev/aws-credentials.yaml#L41-L49) - it is undocumented at the moment.
 - Access to create DNS records for service endpoints, e.g. `kof.example.com`
 
 ### DNS auto-config
@@ -169,17 +178,10 @@ we're using the most simple but less secure [Static credentials](https://github.
 
 ### Management Cluster
 
-- Add kof helm repo to the k0rdent management cluster:
-  ```bash
-  helm repo add kof https://k0rdent.github.io/kof
-  helm repo update
-  helm search repo kof/
-  ```
-  It should list the [helm charts](#helm-charts) described above.
-
 - Install `kof-operators` required by `kof-mothership`:
   ```bash
-  helm upgrade -i --create-namespace -n kof kof-operators kof/kof-operators
+  helm install --create-namespace -n kof kof-operators \
+    oci://ghcr.io/k0rdent/kof/charts/kof-operators --version 0.1.0
   ```
 
 - Compose the values for `kof-mothership`:
@@ -204,11 +206,10 @@ EOF
     - `storage-vmuser-credentials` secret is auto-created by default and auto-distributed to other clusters by Sveltos `ClusterProfile` [here](https://github.com/k0rdent/kof/blob/121b61f5f6de6ddfdf3525b98f3ad4cb8ce57eaa/charts/kof-mothership/values.yaml#L25-L31).
     - `grafana-admin-credentials` secret is auto-created by default [here](https://github.com/k0rdent/kof/blob/121b61f5f6de6ddfdf3525b98f3ad4cb8ce57eaa/charts/kof-mothership/values.yaml#L64-L65). We will use it in the [Grafana](#grafana) section.
 
-- Verify the values and install `kof-mothership`:
+- Install `kof-mothership`:
   ```bash
-  cat mothership-values.yaml
-
-  helm upgrade -i -n kof kof-mothership kof/kof-mothership -f mothership-values.yaml
+  helm install -f mothership-values.yaml -n kof kof-mothership \
+    oci://ghcr.io/k0rdent/kof/charts/kof-mothership --version 0.1.0
   ```
 
 - Wait for all pods to become `Running`:
@@ -282,7 +283,7 @@ spec:
               enabled: true
       - name: kof-storage
         namespace: kof
-        template: kof-storage
+        template: kof-storage-0-1-0
         values: |
           external-dns:
             enabled: true
@@ -430,12 +431,12 @@ spec:
           cert-manager:
             crds:
               enabled: true
-      - template: kof-operators
-        name: kof-operators
+      - name: kof-operators
         namespace: kof
-      - template: kof-collectors
-        name: kof-collectors
+        template: kof-operators-0-1-0
+      - name: kof-collectors
         namespace: kof
+        template: kof-collectors-0-1-0
         values: |
           global:
             clusterName: $MANAGED_CLUSTER_NAME
@@ -479,6 +480,11 @@ EOF
 ### Verification
 
 ```bash
+kubectl get clustersummaries -A -o wide
+```
+Wait until `Provisioning` becomes `Provisioned`.
+
+```bash
 kubectl get secret -n kcm-system $STORAGE_CLUSTER_NAME-kubeconfig \
   -o=jsonpath={.data.value} | base64 -d > storage-kubeconfig
 
@@ -486,7 +492,10 @@ kubectl get secret -n kcm-system $MANAGED_CLUSTER_NAME-kubeconfig \
   -o=jsonpath={.data.value} | base64 -d > managed-kubeconfig
 
 KUBECONFIG=storage-kubeconfig kubectl get pod -A
+  # Expected namespaces: cert-manager, ingress-nginx, kof, kube-system, projectsveltos
+
 KUBECONFIG=managed-kubeconfig kubectl get pod -A
+  # Expected namespaces: kof, kube-system, projectsveltos
 ```
 Wait for all pods to become `Running`.
 
@@ -526,7 +535,7 @@ kubectl port-forward -n kof svc/dashboard 8081:80
     - Cluster profiles should be `Provisioned`.
     - Secrets should be distributed.
 
-![sveltos-demo](assets/kof/sveltos-2025-01-22.gif)
+![sveltos-demo](assets/kof/sveltos-2025-02-06.gif)
 
 ## Grafana
 
@@ -601,6 +610,9 @@ kubectl port-forward -n kof svc/dashboard 8081:80
 
 ### Uninstallation
 
+- WARNING: This not just uninstalls kof, but also deletes your clusters.
+- Please double check they are demo clusters with no valuable data.
+
 ```bash
 kubectl delete -f managed-cluster.yaml
 kubectl delete -f storage-cluster.yaml
@@ -670,3 +682,8 @@ Detailed:
 - [kof-storage](https://github.com/k0rdent/kof/blob/main/charts/kof-storage/Chart.yaml)
 - [kof-operators](https://github.com/k0rdent/kof/blob/main/charts/kof-operators/Chart.yaml)
 - [kof-collectors](https://github.com/k0rdent/kof/blob/main/charts/kof-collectors/Chart.yaml)
+
+## More
+
+- If you've applied this guide you should have kof up and running.
+- Check [k0rdent/kof/docs](https://github.com/k0rdent/kof/tree/main/docs) for advanced guides like configuring alerts.
