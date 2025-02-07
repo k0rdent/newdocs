@@ -994,7 +994,7 @@
         
   
   <span class="md-ellipsis">
-    Using predefined templates
+    Removing predefined templates
   </span>
   
 
@@ -1623,12 +1623,10 @@ defined in your image.</p>
 <h2 id="vm-image">VM Image<a class="headerlink" href="#vm-image" title="Permanent link">#</a></h2>
 <p>You can define the image which will be used for your machine using the following
 parameters:</p>
-<ul>
-<li><code>.spec.config.image</code> - for hosted CP deployment.</li>
-<li><code>.spec.config.controlPlane.image</code> - for control plane nodes in the standalone
-  deployment.</li>
-<li><code>.spec.config.worker.image</code> - for worker nodes in the standalone deployment.</li>
-</ul>
+<p>*<code>.spec.config.image</code> - for hosted CP deployment.
+* <code>.spec.config.controlPlane.image</code> - for control plane nodes in the standalone
+  deployment.
+* <code>.spec.config.worker.image</code> - for worker nodes in the standalone deployment.</p>
 <p>There are multiple self-excluding ways to define the image source (for example Azure
 Compute Gallery, Azure Marketplace, and so on).</p>
 <p>Detailed information regarding image can be found in <a href="https://capz.sigs.k8s.io/self-managed/custom-images">CAPZ documentation</a></p>
@@ -1677,7 +1675,7 @@ below.</p>
 <span class="nt">metadata</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">azure-hosted-cp</span>
 <span class="nt">spec</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">template</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">azure-hosted-cp-0-0-2</span>
+<span class="w">  </span><span class="nt">template</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">azure-hosted-cp-0-1-0</span>
 <span class="w">  </span><span class="nt">credential</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">azure-credential</span>
 <span class="w">  </span><span class="nt">config</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">clusterLabels</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{}</span>
@@ -1697,7 +1695,7 @@ below.</p>
 <span class="nt">metadata</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">azure-hosted-cp</span>
 <span class="nt">spec</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">template</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">azure-hosted-cp-0-0-2</span>
+<span class="w">  </span><span class="nt">template</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">azure-hosted-cp-0-1-0</span>
 <span class="w">  </span><span class="nt">credential</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">azure-credential</span>
 <span class="w">  </span><span class="nt">config</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">clusterLabels</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{}</span>
@@ -1731,9 +1729,9 @@ which will cause cluster deletion to stuck indefinitely.</p>
 <div class="highlight"><pre><span></span><code>kubectl<span class="w"> </span>patch<span class="w"> </span>azurecluster<span class="w"> </span>&lt;cluster-name&gt;<span class="w"> </span>--type<span class="o">=</span>merge<span class="w"> </span>--patch<span class="w"> </span><span class="s1">&#39;metadata: {finalizers: [manual]}&#39;</span>
 </code></pre></div>
 <p>When the finalizer is placed you can remove the <code>ClusterDeployment</code> as usual. Check that
-all <code>AzureMachine</code> objects are deleted successfully, and remove the finalizer you've
+all <code>AzureMachine</code> objects are deleted successfully, then remove the finalizer you've
 placed to finish cluster deletion.</p>
-<p>If you have orphaned <code>AzureMachine</code>s left, you'll have to delete the finalizers on
+<p>If you have orphaned <code>AzureMachine</code> objects left, you'll have to delete the finalizers on
 them manually after making sure that no VMs are present in Azure.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>

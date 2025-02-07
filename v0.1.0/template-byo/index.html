@@ -994,7 +994,7 @@
         
   
   <span class="md-ellipsis">
-    Using predefined templates
+    Removing predefined templates
   </span>
   
 
@@ -1647,7 +1647,7 @@
   
 
 
-<h1 id="bring-your-own-templates">Bring your own Templates<a class="headerlink" href="#bring-your-own-templates" title="Permanent link">#</a></h1>
+<h1 id="bring-your-own-templates">Bring Your Own Templates<a class="headerlink" href="#bring-your-own-templates" title="Permanent link">#</a></h1>
 <p>In addition to the templates that ship with k0rdent, it's possible to make your own. These might represent different types of clusters, or they may represent additional services to add to a cluster. Follow these steps:</p>
 <h2 id="create-a-source-object">Create a Source Object<a class="headerlink" href="#create-a-source-object" title="Permanent link">#</a></h2>
 <div class="admonition info">
@@ -1662,7 +1662,7 @@ Skip this step if you're using an existing source.</p>
 <li><a href="https://fluxcd.io/flux/components/source/gitrepositories/">GitRepository</a></li>
 <li><a href="https://fluxcd.io/flux/components/source/buckets/">Bucket</a></li>
 </ul>
-<p>Note that it's important to pay attention to where the source resides. Cluster-scoped <code>ProviderTemplates</code> must reside in the <strong>system</strong> namespace (<code>kcm-system</code> by default) but other template sources must reside in the same directory as the templates that will come from them.</p>
+<p>Note that it's important to pay attention to where the source resides. Cluster-scoped <code>ProviderTemplate</code> objects must reside in the <strong>system</strong> namespace (<code>kcm-system</code> by default) but other template sources must reside in the same directory as the templates that will come from them.</p>
 <p>For example, this YAML describes a custom <code>Source</code> object of <code>kind</code> <code>HelmRepository</code>:</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -1685,13 +1685,13 @@ The custom <code>HelmRepository</code> must have the label
 <span class="w">  </span><span class="nt">url</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">oci://ghcr.io/k0rdent/kcm/charts</span>
 </code></pre></div>
 <h2 id="create-the-template">Create the Template<a class="headerlink" href="#create-the-template" title="Permanent link">#</a></h2>
-<p>Once you have the Source, you can create the actual template. This template can be one of three types:</p>
+<p>Once you have the source, you can create the actual template. This template can be one of three types:</p>
 <ul>
 <li><code>ClusterTemplate</code></li>
 <li><code>ServiceTemplate</code></li>
 <li><code>ProviderTemplate</code></li>
 </ul>
-<p>For <code>ClusterTemplate</code>s and <code>ServiceTemplate</code>s, configure the namespace where this template should reside
+<p>For <code>ClusterTemplate</code> and <code>ServiceTemplate</code> objects, configure the namespace where this template should reside
 (<code>metadata.namespace</code>).</p>
 <p>For defining the Helm chart, you have two choices. You can either specify the actual helm chart definition in the <code>.spec.helm.chartSpec</code> field of the
 <a href="https://fluxcd.io/flux/components/source/api/v1/#source.toolkit.fluxcd.io/v1.HelmChartSpec">HelmChartSpec</a> kind, or
@@ -1713,7 +1713,7 @@ under <code>spec.helm.chartSpec</code>:</p>
 <tbody>
 <tr>
 <td><code>sourceRef</code><br/><a href="https://fluxcd.io/flux/components/source/api/v1/#source.toolkit.fluxcd.io/v1.LocalHelmChartSourceReference">LocalHelmChartSourceReference</a></td>
-<td>Reference to the source object (e.g., <code>HelmRepository</code>, <code>GitRepository</code>, or <code>Bucket</code>) in the same namespace as the Template.</td>
+<td>Reference to the source object (for example, <code>HelmRepository</code>, <code>GitRepository</code>, or <code>Bucket</code>) in the same namespace as the Template.</td>
 </tr>
 <tr>
 <td><code>chart</code><br/>string</td>
@@ -1738,14 +1738,14 @@ under <code>spec.helm.chartSpec</code>:</p>
 <p>
 <code>ClusterTemplate</code> and <code>ServiceTemplate</code> objects should reside in the same namespace as the <code>ClusterDeployment</code>
 referencing them. The <code>ClusterDeployment</code> can't reference the Template from another namespace (the creation request will
-be declined by the admission webhook). All <code>ClusterTemplates</code> and <code>ServiceTemplates</code> shipped with kcm reside in the
+be declined by the admission webhook). All <code>ClusterTemplate</code> and <code>ServiceTemplate</code> objects shipped with KCM reside in the
 system namespace (defaults to <code>kcm-system</code>). To get the instructions on how to distribute Templates along multiple
 namespaces, read <a href="../template-intro/#template-life-cycle-management">Template Life Cycle Management</a>.</p>
 </div>
 <h3 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">#</a></h3>
 <div class="admonition example">
 <p class="admonition-title">Example</p>
-<p>Custom ClusterTemplate with the Chart Definition to Create a new HelmChart
+<p>Custom <code>ClusterTemplate</code> with the Chart Definition to Create a new HelmChart
 <div class="highlight"><pre><span></span><code><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">k0rdent.mirantis.com/v1alpha1</span>
 <span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ClusterTemplate</span>
 <span class="nt">metadata</span><span class="p">:</span>
@@ -1766,7 +1766,7 @@ namespaces, read <a href="../template-intro/#template-life-cycle-management">Tem
 </div>
 <div class="admonition example">
 <p class="admonition-title">Example</p>
-<p>Custom ClusterTemplate Referencing an Existing HelmChart object</p>
+<p>Custom <code>ClusterTemplate</code> Referencing an Existing HelmChart object</p>
 <div class="highlight"><pre><span></span><code><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">k0rdent.mirantis.com/v1alpha1</span>
 <span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ClusterTemplate</span>
 <span class="nt">metadata</span><span class="p">:</span>
@@ -1785,8 +1785,7 @@ namespaces, read <a href="../template-intro/#template-life-cycle-management">Tem
 <code>infrastructure</code>, <code>bootstrap</code>, and <code>control-plane</code>. This can be achieved in two ways:</p>
 <ol>
 <li>By listing the providers explicitly in the <code>spec.providers</code> field.</li>
-<li>Alternatively, by including specific annotations in the <code>Chart.yaml</code> of the referenced Helm chart.
-The annotations should list the providers as a <code>comma-separated</code> value.</li>
+<li>Alternatively, by including specific annotations in the <code>Chart.yaml</code> of the referenced Helm chart. The annotations should list the providers as a <code>comma-separated</code> value.</li>
 </ol>
 <p>For example:</p>
 <p>In a <code>Template</code> spec:</p>
@@ -1798,7 +1797,7 @@ The annotations should list the providers as a <code>comma-separated</code> valu
 </code></pre></div>
 <p>In a <code>Chart.yaml</code>:</p>
 <div class="highlight"><pre><span></span><code>annotations:
-<span class="w">  </span>cluster.x-k8s.io/provider:<span class="w"> </span>infrastructure-aws,<span class="w"> </span>control-plane-k0sproject-k0smotron,<span class="w"> </span>bootstrap-k0sproject-k0smotron
+<span class="w">    </span>cluster.x-k8s.io/provider:<span class="w"> </span>infrastructure-aws,<span class="w"> </span>control-plane-k0sproject-k0smotron,<span class="w"> </span>bootstrap-k0sproject-k0smotron
 </code></pre></div>
 <h2 id="compatibility-attributes">Compatibility attributes<a class="headerlink" href="#compatibility-attributes" title="Permanent link">#</a></h2>
 <p>Each of the <code>*Template</code> resources has compatibility versions attributes to constraint the core <code>CAPI</code>, <code>CAPI</code> provider or Kubernetes versions.
@@ -1896,7 +1895,7 @@ Given compatibility values will be then set accordingly in the <code>.status</co
 <h3 id="compatibility-attributes-enforcement">Compatibility attributes enforcement<a class="headerlink" href="#compatibility-attributes-enforcement" title="Permanent link">#</a></h3>
 <p>The aforedescribed attributes are checked for compliance with the following rules:</p>
 <ul>
-<li>Both the exact and constraint version of the same type (e.g. <code>k8sVersion</code> and <code>k8sConstraint</code>) must
+<li>Both the exact and constraint version of the same type (for example <code>k8sVersion</code> and <code>k8sConstraint</code>) must
 be set, otherwise no check is performed;</li>
 <li>If a <code>ClusterTemplate</code> object's provider's contract version does not satisfy contract versions
 from the related <code>ProviderTemplate</code> object, updates to the <code>ClusterDeployment</code> object will be blocked;</li>
