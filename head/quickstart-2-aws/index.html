@@ -1881,9 +1881,8 @@ sudo<span class="w"> </span>install<span class="w"> </span>-o<span class="w"> </
 <p>These credentials will be used both by the AWS CLI (to create your k0rdent user) and by <code>clusterawsadm</code> (to create a CloudFormation template used by CAPA within k0rdent).</p>
 <h2 id="create-the-k0rdent-aws-user">Create the k0rdent AWS user<a class="headerlink" href="#create-the-k0rdent-aws-user" title="Permanent link">#</a></h2>
 <p>Now we can use the AWS CLI to create a new k0rdent user:</p>
-<div class="highlight"><pre><span></span><code><span class="w"> </span>aws<span class="w"> </span>iam<span class="w"> </span>create-user<span class="w"> </span>--user-name<span class="w"> </span>k0rdentQuickstart
+<p><div class="highlight"><pre><span></span><code><span class="w"> </span>aws<span class="w"> </span>iam<span class="w"> </span>create-user<span class="w"> </span>--user-name<span class="w"> </span>k0rdentQuickstart
 </code></pre></div>
-<p>You'll see something like what's shown below. You should save this data securely. Note the Amazon Resource Name (ARN) because we'll be using it right away:</p>
 <div class="highlight"><pre><span></span><code><span class="go">{</span>
 <span class="go">    &quot;User&quot;: {</span>
 <span class="go">        &quot;Path&quot;: &quot;/&quot;,</span>
@@ -1893,7 +1892,7 @@ sudo<span class="w"> </span>install<span class="w"> </span>-o<span class="w"> </
 <span class="go">        &quot;CreateDate&quot;: &quot;2025-01-18T08:15:27+00:00&quot;</span>
 <span class="go">    }</span>
 <span class="go">}</span>
-</code></pre></div>
+</code></pre></div></p>
 <h2 id="configure-aws-iam-for-k0rdent">Configure AWS IAM for k0rdent<a class="headerlink" href="#configure-aws-iam-for-k0rdent" title="Permanent link">#</a></h2>
 <p>Before k0rdent CAPI can manage resources on AWS, you need to use <code>clusterawsadm</code> to create a bootstrap CloudFormation stack with additional IAM policies and a service account. You do this under the administrative account credentials you earlier exported to the management node environment:</p>
 <div class="highlight"><pre><span></span><code>clusterawsadm<span class="w"> </span>bootstrap<span class="w"> </span>iam<span class="w"> </span>create-cloudformation-stack
@@ -1905,11 +1904,14 @@ sudo<span class="w"> </span>install<span class="w"> </span>-o<span class="w"> </
 <li><code>controllers.cluster-api-provider-aws.sigs.k8s.io</code></li>
 <li><code>nodes.cluster-api-provider-aws.sigs.k8s.io</code></li>
 </ul>
-<p>We use the AWS CLI to attach them. To do this, you will need to extract the Amazon Resource Name (ARN) for the newly-created user. In the above example of content returned from the AWS CLI on user creation (see above) that's marked with the placeholder <code>FAKE_ARN_123</code>:</p>
-<p>Given this, you can assemble and execute the following commands to implement the required policies:</p>
-<div class="highlight"><pre><span></span><code>aws<span class="w"> </span>iam<span class="w"> </span>attach-user-policy<span class="w"> </span>--user-name<span class="w"> </span>k0rdentQuickstart<span class="w"> </span>--policy-arn<span class="w"> </span>arn:aws:iam::FAKE_ARN_123:policy/control-plane.cluster-api-provider-aws.sigs.k8s.io
-aws<span class="w"> </span>iam<span class="w"> </span>attach-user-policy<span class="w"> </span>--user-name<span class="w"> </span>k0rdentQuickstart<span class="w"> </span>--policy-arn<span class="w"> </span>arn:aws:iam::FAKE_ARN_123:policy/controllers-eks.cluster-api-provider-aws.sigs.k8s.io
-aws<span class="w"> </span>iam<span class="w"> </span>attach-user-policy<span class="w"> </span>--user-name<span class="w"> </span>k0rdentQuickstart<span class="w"> </span>--policy-arn<span class="w"> </span>arn:aws:iam::FAKE_ARN_123:policy/controllers.cluster-api-provider-aws.sigs.k8s.io
+<p>We use the AWS CLI to attach them. To do this, you will need to extract the Amazon Resource Name (ARN) for the newly-created user:</p>
+<div class="highlight"><pre><span></span><code><span class="nv">AWS_ARN_ID</span><span class="o">=</span><span class="k">$(</span>aws<span class="w"> </span>iam<span class="w"> </span>get-user<span class="w"> </span>--user-name<span class="w"> </span>k0rdentQuickstart<span class="w"> </span>--query<span class="w"> </span><span class="s1">&#39;User.Arn&#39;</span><span class="w"> </span>--output<span class="w"> </span>text<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-oP<span class="w"> </span><span class="s1">&#39;\d{12}&#39;</span><span class="k">)</span>
+<span class="nb">echo</span><span class="w"> </span><span class="nv">$AWS_ARN_ID</span>
+</code></pre></div>
+<p>Assemble and execute the following commands to implement the required policies:</p>
+<div class="highlight"><pre><span></span><code>aws<span class="w"> </span>iam<span class="w"> </span>attach-user-policy<span class="w"> </span>--user-name<span class="w"> </span>k0rdentQuickstart<span class="w"> </span>--policy-arn<span class="w"> </span>arn:aws:iam::<span class="nv">$AWS_ARN_ID</span>:policy/control-plane.cluster-api-provider-aws.sigs.k8s.io
+aws<span class="w"> </span>iam<span class="w"> </span>attach-user-policy<span class="w"> </span>--user-name<span class="w"> </span>k0rdentQuickstart<span class="w"> </span>--policy-arn<span class="w"> </span>arn:aws:iam::<span class="nv">$AWS_ARN_ID</span>:policy/controllers-eks.cluster-api-provider-aws.sigs.k8s.io
+aws<span class="w"> </span>iam<span class="w"> </span>attach-user-policy<span class="w"> </span>--user-name<span class="w"> </span>k0rdentQuickstart<span class="w"> </span>--policy-arn<span class="w"> </span>arn:aws:iam::<span class="nv">$AWS_ARN_ID</span>:policy/controllers.cluster-api-provider-aws.sigs.k8s.io
 </code></pre></div>
 <p>We can check to see that policies were assigned:</p>
 <p><div class="highlight"><pre><span></span><code>aws<span class="w"> </span>iam<span class="w"> </span>list-policies<span class="w"> </span>--scope<span class="w"> </span>Local

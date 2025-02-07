@@ -1793,7 +1793,12 @@
 Detailed instructions for deploying k0rdent management clusters into a multi-node configuration and scaling them as needed are COMING SOON!</p>
 </div>
 <h2 id="install-k0rdent">Install k0rdent<a class="headerlink" href="#install-k0rdent" title="Permanent link">#</a></h2>
-<p>This section assumes that you already have a kubernetes cluster installed. If you need to setup a cluster you can follow the <a href="#create-and-prepare-a-kubernetes-cluster-with-k0s">Create and prepare a Kubernetes cluster with k0s</a> guide.</p>
+<p>This section assumes that you already have a kubernetes cluster installed. If you need to setup a cluster you can follow the <a href="#create-and-prepare-a-kubernetes-cluster-with-k0s">Create and prepare a Kubernetes cluster with k0s</a> guide. </p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>
+While it is technically possible to run k0rdent on an existing cluster, using a fresh cluster is recommended to avoid conflicts with pre-instalked components.</p>
+</div>
 <p>The actual management cluster is a Kubernetes cluster with the k0rdent application installed. The simplest way to install k0rdent is through its Helm chart.  You can find the latest release <a href="https://github.com/k0rdent/kcm/tags">here</a>, and from there you can deploy the Helm chart, as in:</p>
 <p><div class="highlight"><pre><span></span><code>helm<span class="w"> </span>install<span class="w"> </span>kcm<span class="w"> </span>oci://ghcr.io/k0rdent/kcm/charts/kcm<span class="w"> </span>--version<span class="w"> </span><span class="m">0</span>.1.0<span class="w"> </span>-n<span class="w"> </span>kcm-system<span class="w"> </span>--create-namespace
 </code></pre></div>
@@ -1917,9 +1922,9 @@ sudo<span class="w"> </span>k0s<span class="w"> </span>start
 <p>k0s includes its own preconfigured version of <code>kubectl</code> so make sure the cluster is running:</p>
 <div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>k0s<span class="w"> </span>kubectl<span class="w"> </span>get<span class="w"> </span>nodes
 </code></pre></div>
-<p>You should see a single node with a status of <code>Ready</code>, as in:</p>
-<div class="highlight"><pre><span></span><code>NAME<span class="w">              </span>STATUS<span class="w">   </span>ROLES<span class="w">    </span>AGE<span class="w">   </span>VERSION
-ip-172-31-29-61<span class="w">   </span>Ready<span class="w">    </span>&lt;none&gt;<span class="w">   </span>46s<span class="w">   </span>v1.31.2+k0s
+<p>After 2-3 minutes you should see a single <code>control-plane</code> node with a status of <code>Ready</code>, as in:</p>
+<div class="highlight"><pre><span></span><code>NAME<span class="w">              </span>STATUS<span class="w">   </span>ROLES<span class="w">            </span>AGE<span class="w">   </span>VERSION
+ip-172-31-29-61<span class="w">   </span>Ready<span class="w">    </span>control-plane<span class="w">    </span>46s<span class="w">   </span>v1.31.2+k0s
 </code></pre></div>
 </li>
 <li>
