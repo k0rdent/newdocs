@@ -911,9 +911,9 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#cluster-deployment" class="md-nav__link">
+  <a href="#child-cluster" class="md-nav__link">
     <span class="md-ellipsis">
-      Cluster Deployment
+      Child Cluster
     </span>
   </a>
   
@@ -1022,9 +1022,9 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#adding-a-new-clusterdeployment" class="md-nav__link">
+  <a href="#adding-a-new-child-cluster" class="md-nav__link">
     <span class="md-ellipsis">
-      Adding a New ClusterDeployment
+      Adding a New Child Cluster
     </span>
   </a>
   
@@ -1097,9 +1097,9 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#resources-of-a-clusterdeployment" class="md-nav__link">
+  <a href="#resources-of-a-child-cluster" class="md-nav__link">
     <span class="md-ellipsis">
-      Resources of a ClusterDeployment
+      Resources of a Child Cluster
     </span>
   </a>
   
@@ -2012,9 +2012,9 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#cluster-deployment" class="md-nav__link">
+  <a href="#child-cluster" class="md-nav__link">
     <span class="md-ellipsis">
-      Cluster Deployment
+      Child Cluster
     </span>
   </a>
   
@@ -2123,9 +2123,9 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#adding-a-new-clusterdeployment" class="md-nav__link">
+  <a href="#adding-a-new-child-cluster" class="md-nav__link">
     <span class="md-ellipsis">
-      Adding a New ClusterDeployment
+      Adding a New Child Cluster
     </span>
   </a>
   
@@ -2198,9 +2198,9 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#resources-of-a-clusterdeployment" class="md-nav__link">
+  <a href="#resources-of-a-child-cluster" class="md-nav__link">
     <span class="md-ellipsis">
-      Resources of a ClusterDeployment
+      Resources of a Child Cluster
     </span>
   </a>
   
@@ -2250,7 +2250,7 @@
 <h1 id="k0rdent-observability-and-finops-kof">k0rdent Observability and FinOps (kof)<a class="headerlink" href="#k0rdent-observability-and-finops-kof" title="Permanent link">#</a></h1>
 <h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">#</a></h2>
 <p>k0rdent Observability and FinOps (<a href="https://github.com/k0rdent/kof">kof</a>) provides enterprise-grade observability
-and FinOps capabilities for k0rdent-managed Kubernetes clusters.
+and FinOps capabilities for k0rdent-managed child Kubernetes clusters.
 It enables centralized metrics, logging, and cost management
 through a unified <a href="https://opentelemetry.io/docs/">OpenTelemetry</a>-based architecture.</p>
 <h2 id="architecture">Architecture<a class="headerlink" href="#architecture" title="Permanent link">#</a></h2>
@@ -2258,26 +2258,26 @@ through a unified <a href="https://opentelemetry.io/docs/">OpenTelemetry</a>-bas
 <p>From a high-level perspective, KOF consists of three layers: Collection, where the statistics and events are gathered, Storage, to keep track of them, and Management, where you
 interact through the UI.</p>
 <div class="highlight"><pre><span></span><code>           ┌────────────────┐
-           │   Management  │
-           │   UI, promxy  │
+           │   Management   │
+           │   UI, promxy   │
            └────────┬───────┘
                     │
              ┌──────┴──────┐
-             │            │
+             │             │
         ┌────┴─────┐ ┌─────┴────┐
-        │ Storage │ │ Storage │
-        │ region 1│ │ region 2│
+        │ Storage  │ │ Storage  │
+        │ region 1 │ │ region 2 │
         └────┬─────┘ └─────┬────┘
-            │             │
+             │             │
       ┌──────┴──────┐     ...
       │             │
 ┌─────┴─────┐ ┌─────┴─────┐
-│ Collect  │ │ Collect  │
-│ managed 1│ │ managed 2│
+│ Collect   │ │ Collect   │
+│ child 1   │ │ child 2   │
 └───────────┘ └───────────┘
 </code></pre></div>
 <h3 id="mid-level">Mid-level<a class="headerlink" href="#mid-level" title="Permanent link">#</a></h3>
-<p>Getting a little bit more detailed, it's important to undrestand that data flows upwards, from observed resources to centralized Grafana om the
+<p>Getting a little bit more detailed, it's important to undrestand that data flows upwards, from observed resources to centralized Grafana on the
 Management layer:</p>
 <div class="highlight"><pre><span></span><code>management cluster_____________________
 │                                     │
@@ -2318,7 +2318,7 @@ cloud 1...
    │  │__________________________________│          │
    │                                                │
    │                                                │
-   │  cluster deployment 1__________________  2...  │
+   │  child deployment 1____________________  2...  │
    │  │                                    │  │     │
    │  │  cert-manager (OTel-operator)      │  │     │
    │  │                                    │  │     │
@@ -2381,7 +2381,7 @@ cloud 1...
 </ul>
 <h2 id="installation">Installation<a class="headerlink" href="#installation" title="Permanent link">#</a></h2>
 <h3 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">#</a></h3>
-<p>Before beginning KOF installation, you should have the following compoents in place:</p>
+<p>Before beginning KOF installation, you should have the following components in place:</p>
 <ul>
 <li>A k0rdent management cluster - You can get instructions to create one in the <a href="https://docs.k0rdent.io/v0.1.0/quickstart-1-mgmt-node-and-cluster/">quickstart guide</a><ul>
 <li>To test on <a href="https://docs.k0sproject.io/stable/system-requirements/#host-operating-system">macOS</a> you can install using:
@@ -2400,7 +2400,7 @@ you can automate the process now using <a href="https://kubernetes-sigs.github.i
 <p>For example, for AWS you should use the <a href="https://github.com/kubernetes-sigs/external-dns/blob/master/docs/tutorials/aws.md#node-iam-role">Node IAM Role</a>
 or <a href="https://github.com/kubernetes-sigs/external-dns/blob/master/docs/tutorials/aws.md#iam-roles-for-service-accounts">IRSA</a> methods in production.</p>
 <p>For now, however, just for the sake of this demo based on the <code>aws-standalone</code> template,
-you an use the most straightforward (though less secure) <a href="https://github.com/kubernetes-sigs/external-dns/blob/master/docs/tutorials/aws.md#static-credentials">static credentials</a> method:</p>
+you can use the most straightforward (though less secure) <a href="https://github.com/kubernetes-sigs/external-dns/blob/master/docs/tutorials/aws.md#static-credentials">static credentials</a> method:</p>
 <ol>
 <li>Create an <code>external-dns</code> IAM user with <a href="https://github.com/kubernetes-sigs/external-dns/blob/master/docs/tutorials/aws.md#iam-policy">this policy</a>.</li>
 <li>Create an access key and <code>external-dns-aws-credentials</code> file, as in:
@@ -2460,13 +2460,11 @@ kubectl<span class="w"> </span>create<span class="w"> </span>secret<span class="
 </ol>
 <h3 id="storage-cluster">Storage Cluster<a class="headerlink" href="#storage-cluster" title="Permanent link">#</a></h3>
 <p>Now install KOF on the Storage cluster:</p>
+<p>First look through the <a href="https://github.com/k0rdent/kof/blob/main/charts/kof-storage/values.yaml">default values</a> of the <code>kof-storage</code> chart.
+Apply the quick start example for AWS, or use it as a reference.</p>
 <ol>
-<li>Look through the <a href="https://github.com/k0rdent/kof/blob/main/charts/kof-storage/values.yaml">default values</a> of the <code>kof-storage</code> chart.</li>
 <li>
-<p>Apply the quick start example for AWS, or use it as a reference.</p>
-</li>
-<li>
-<p>Set your own KOF variables using your own values:
+<p>Set your KOF variables using your own values:
     <div class="highlight"><pre><span></span><code><span class="nv">STORAGE_CLUSTER_NAME</span><span class="o">=</span>cloud1-region1
 <span class="nv">STORAGE_DOMAIN</span><span class="o">=</span><span class="nv">$STORAGE_CLUSTER_NAME</span>.kof.example.com
 <span class="nv">ADMIN_EMAIL</span><span class="o">=</span><span class="k">$(</span>git<span class="w"> </span>config<span class="w"> </span>user.email<span class="k">)</span>
@@ -2474,7 +2472,7 @@ kubectl<span class="w"> </span>create<span class="w"> </span>secret<span class="
 </code></pre></div></p>
 </li>
 <li>
-<p>Use the up-to-date KOF template, as in:
+<p>Use the up-to-date KOF <code>ClusterTemplate</code>, as in:
     <div class="highlight"><pre><span></span><code>kubectl<span class="w"> </span>get<span class="w"> </span>clustertemplate<span class="w"> </span>-n<span class="w"> </span>kcm-system<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>aws
 <span class="nv">TEMPLATE</span><span class="o">=</span>aws-standalone-cp-0-1-0
 </code></pre></div></p>
@@ -2620,7 +2618,7 @@ kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> <
 </code></pre></div></p>
 </li>
 </ol>
-<h3 id="cluster-deployment">Cluster Deployment<a class="headerlink" href="#cluster-deployment" title="Permanent link">#</a></h3>
+<h3 id="child-cluster">Child Cluster<a class="headerlink" href="#child-cluster" title="Permanent link">#</a></h3>
 <p>On the actual cluster to be monitored, do the following:</p>
 <ol>
 <li>
@@ -2632,8 +2630,8 @@ kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> <
 </li>
 <li>
 <p>Set your own value below, verifing <a href="#storage-cluster">the variables</a>:
-    <div class="highlight"><pre><span></span><code><span class="nv">MANAGED_CLUSTER_NAME</span><span class="o">=</span><span class="nv">$STORAGE_CLUSTER_NAME</span>-managed1
-<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$MANAGED_CLUSTER_NAME</span><span class="s2">, </span><span class="nv">$STORAGE_DOMAIN</span><span class="s2">&quot;</span>
+    <div class="highlight"><pre><span></span><code><span class="nv">CHILD_CLUSTER_NAME</span><span class="o">=</span><span class="nv">$STORAGE_CLUSTER_NAME</span>-child1
+<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$CHILD_CLUSTER_NAME</span><span class="s2">, </span><span class="nv">$STORAGE_DOMAIN</span><span class="s2">&quot;</span>
 </code></pre></div></p>
 </li>
 <li>
@@ -2644,11 +2642,11 @@ kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> <
 </li>
 <li>
 <p>Compose the <code>ClusterDeployment</code>:</p>
-<div class="highlight"><pre><span></span><code>cat<span class="w"> </span>&gt;managed-cluster.yaml<span class="w"> </span><span class="s">&lt;&lt;EOF</span>
+<div class="highlight"><pre><span></span><code>cat<span class="w"> </span>&gt;child-cluster.yaml<span class="w"> </span><span class="s">&lt;&lt;EOF</span>
 <span class="s">apiVersion: k0rdent.mirantis.com/v1alpha1</span>
 <span class="s">kind: ClusterDeployment</span>
 <span class="s">metadata:</span>
-<span class="s">  name: $MANAGED_CLUSTER_NAME</span>
+<span class="s">  name: $CHILD_CLUSTER_NAME</span>
 <span class="s">  namespace: kcm-system</span>
 <span class="s">  labels:</span>
 <span class="s">    kof: collector</span>
@@ -2687,7 +2685,7 @@ kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> <
 <span class="s">        template: kof-collectors-0-1-0</span>
 <span class="s">        values: |</span>
 <span class="s">          global:</span>
-<span class="s">            clusterName: $MANAGED_CLUSTER_NAME</span>
+<span class="s">            clusterName: $CHILD_CLUSTER_NAME</span>
 <span class="s">          opencost:</span>
 <span class="s">            enabled: true</span>
 <span class="s">            opencost:</span>
@@ -2698,7 +2696,7 @@ kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> <
 <span class="s">                external:</span>
 <span class="s">                  url: https://vmauth.$STORAGE_DOMAIN/vm/select/0/prometheus</span>
 <span class="s">              exporter:</span>
-<span class="s">                defaultClusterId: $MANAGED_CLUSTER_NAME</span>
+<span class="s">                defaultClusterId: $CHILD_CLUSTER_NAME</span>
 <span class="s">          kof:</span>
 <span class="s">            logs:</span>
 <span class="s">              username_key: username</span>
@@ -2716,13 +2714,13 @@ kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> <
 <li>
 <p>Verify and apply the <code>ClusterDeployment</code>:
     ```shell
-    cat managed-cluster.yaml</p>
-<p>kubectl apply -f managed-cluster.yaml
+    cat child-cluster.yaml</p>
+<p>kubectl apply -f child-cluster.yaml
 ``:</p>
 </li>
 <li>
 <p>Watch while the cluster is deployed to AWS until all values of <code>READY</code> are <code>True</code>:
-    <div class="highlight"><pre><span></span><code>clusterctl<span class="w"> </span>describe<span class="w"> </span>cluster<span class="w"> </span>-n<span class="w"> </span>kcm-system<span class="w"> </span><span class="nv">$MANAGED_CLUSTER_NAME</span><span class="w"> </span><span class="se">\</span>
+    <div class="highlight"><pre><span></span><code>clusterctl<span class="w"> </span>describe<span class="w"> </span>cluster<span class="w"> </span>-n<span class="w"> </span>kcm-system<span class="w"> </span><span class="nv">$CHILD_CLUSTER_NAME</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--show-conditions<span class="w"> </span>all
 </code></pre></div></p>
 </li>
@@ -2731,17 +2729,17 @@ kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> <
 <p>Finally, verify that KOF installed properly.</p>
 <p><div class="highlight"><pre><span></span><code>kubectl<span class="w"> </span>get<span class="w"> </span>clustersummaries<span class="w"> </span>-A<span class="w"> </span>-o<span class="w"> </span>wide
 </code></pre></div>
-Wait until the value of <code>Provisioning</code> becomes <code>Provisioned</code>.</p>
+Wait until the value of <code>HELMCHARTS</code> changes from <code>Provisioning</code> to <code>Provisioned</code>.</p>
 <p><div class="highlight"><pre><span></span><code>kubectl<span class="w"> </span>get<span class="w"> </span>secret<span class="w"> </span>-n<span class="w"> </span>kcm-system<span class="w"> </span><span class="nv">$STORAGE_CLUSTER_NAME</span>-kubeconfig<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-o<span class="o">=</span><span class="nv">jsonpath</span><span class="o">={</span>.data.value<span class="o">}</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>base64<span class="w"> </span>-d<span class="w"> </span>&gt;<span class="w"> </span>storage-kubeconfig
 
-kubectl<span class="w"> </span>get<span class="w"> </span>secret<span class="w"> </span>-n<span class="w"> </span>kcm-system<span class="w"> </span><span class="nv">$MANAGED_CLUSTER_NAME</span>-kubeconfig<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-o<span class="o">=</span><span class="nv">jsonpath</span><span class="o">={</span>.data.value<span class="o">}</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>base64<span class="w"> </span>-d<span class="w"> </span>&gt;<span class="w"> </span>managed-kubeconfig
+kubectl<span class="w"> </span>get<span class="w"> </span>secret<span class="w"> </span>-n<span class="w"> </span>kcm-system<span class="w"> </span><span class="nv">$CHILD_CLUSTER_NAME</span>-kubeconfig<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-o<span class="o">=</span><span class="nv">jsonpath</span><span class="o">={</span>.data.value<span class="o">}</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>base64<span class="w"> </span>-d<span class="w"> </span>&gt;<span class="w"> </span>child-kubeconfig
 
 <span class="nv">KUBECONFIG</span><span class="o">=</span>storage-kubeconfig<span class="w"> </span>kubectl<span class="w"> </span>get<span class="w"> </span>pod<span class="w"> </span>-A
 <span class="w">  </span><span class="c1"># Namespaces: cert-manager, ingress-nginx, kof, kube-system, projectsveltos</span>
 
-<span class="nv">KUBECONFIG</span><span class="o">=</span>managed-kubeconfig<span class="w"> </span>kubectl<span class="w"> </span>get<span class="w"> </span>pod<span class="w"> </span>-A
+<span class="nv">KUBECONFIG</span><span class="o">=</span>child-kubeconfig<span class="w"> </span>kubectl<span class="w"> </span>get<span class="w"> </span>pod<span class="w"> </span>-A
 <span class="w">  </span><span class="c1"># Namespaces: kof, kube-system, projectsveltos</span>
 </code></pre></div>
 Wait for all pods to show as <code>Running</code>.</p>
@@ -2756,7 +2754,7 @@ Wait for all pods to show as <code>Running</code>.</p>
     It should look like <code>REDACTED.us-east-2.elb.amazonaws.com</code></p>
 </li>
 <li>
-<p>Create the these DNS records of type <code>A</code> both pointing to that <code>EXTERNAL-IP</code>:
+<p>Create these DNS records of type <code>A</code>, both pointing to that <code>EXTERNAL-IP</code>:
     <div class="highlight"><pre><span></span><code><span class="nb">echo</span><span class="w"> </span>vmauth.<span class="nv">$STORAGE_DOMAIN</span>
 <span class="nb">echo</span><span class="w"> </span>grafana.<span class="nv">$STORAGE_DOMAIN</span>
 </code></pre></div></p>
@@ -2780,7 +2778,7 @@ kubectl<span class="w"> </span>port-forward<span class="w"> </span>-n<span class
 <p>Now open <a href="http://127.0.0.1:8081/login">http://127.0.0.1:8081/login</a> and paste the token output in step 1 above.</p>
 </li>
 <li>Open the <code>ClusterAPI</code> tab: <a href="http://127.0.0.1:8081/sveltos/clusters/ClusterAPI/1">http://127.0.0.1:8081/sveltos/clusters/ClusterAPI/1</a></li>
-<li>Check both storage and managed clusters:<ul>
+<li>Check both storage and child clusters:<ul>
 <li>Cluster profiles should be <code>Provisioned</code>.</li>
 <li>Secrets should be distributed.</li>
 </ul>
@@ -2838,13 +2836,12 @@ kubectl<span class="w"> </span>port-forward<span class="w"> </span>-n<span class
 <p>The method for scaling KOF depends on the type of expansion:</p>
 <h3 id="regional-expansion">Regional Expansion<a class="headerlink" href="#regional-expansion" title="Permanent link">#</a></h3>
 <ol>
-<li>Deploy a <a href="#storage-cluster">Storage Cluster</a> in new region</li>
-<li>Update promxy configuration</li>
-<li>Configure collector routing to point to the additional capacity</li>
+<li>Deploy a <a href="#storage-cluster">Storage Cluster</a> in the new region</li>
+<li>Configure child clusters in this region to point to this storage cluster</li>
 </ol>
-<h3 id="adding-a-new-clusterdeployment">Adding a New ClusterDeployment<a class="headerlink" href="#adding-a-new-clusterdeployment" title="Permanent link">#</a></h3>
+<h3 id="adding-a-new-child-cluster">Adding a New Child Cluster<a class="headerlink" href="#adding-a-new-child-cluster" title="Permanent link">#</a></h3>
 <ol>
-<li>Apply templates, as in the <a href="#managed-cluster">Managed Cluster</a> section</li>
+<li>Apply templates, as in the <a href="#child-cluster">Child Cluster</a> section</li>
 <li>Verify the data flow</li>
 <li>Configure any custom dashboards</li>
 </ol>
@@ -2870,7 +2867,7 @@ kubectl<span class="w"> </span>port-forward<span class="w"> </span>-n<span class
 <p>
 Make sure these are just your demo clusters and do not contain important data.</p>
 </div>
-<div class="highlight"><pre><span></span><code>kubectl<span class="w"> </span>delete<span class="w"> </span>-f<span class="w"> </span>managed-cluster.yaml
+<div class="highlight"><pre><span></span><code>kubectl<span class="w"> </span>delete<span class="w"> </span>-f<span class="w"> </span>child-cluster.yaml
 kubectl<span class="w"> </span>delete<span class="w"> </span>-f<span class="w"> </span>storage-cluster.yaml
 </code></pre></div>
 <p>To remove KOF, use helm:</p>
@@ -2913,7 +2910,7 @@ kubectl<span class="w"> </span>delete<span class="w"> </span>-f<span class="w"> 
 </code></pre></div></p>
 </li>
 </ul>
-<h3 id="resources-of-a-clusterdeployment">Resources of a ClusterDeployment<a class="headerlink" href="#resources-of-a-clusterdeployment" title="Permanent link">#</a></h3>
+<h3 id="resources-of-a-child-cluster">Resources of a Child Cluster<a class="headerlink" href="#resources-of-a-child-cluster" title="Permanent link">#</a></h3>
 <ul>
 <li><a href="https://github.com/k0rdent/kof/blob/121b61f5f6de6ddfdf3525b98f3ad4cb8ce57eaa/charts/kof-collectors/templates/opentelemetry/instrumentation.yaml#L18-L22">opentelemetry</a>:
   <div class="highlight"><pre><span></span><code><span class="nt">resourceRequirements</span><span class="p">:</span>
