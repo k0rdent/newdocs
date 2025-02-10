@@ -902,9 +902,9 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#storage-cluster" class="md-nav__link">
+  <a href="#regional-cluster" class="md-nav__link">
     <span class="md-ellipsis">
-      Storage Cluster
+      Regional Cluster
     </span>
   </a>
   
@@ -2003,9 +2003,9 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#storage-cluster" class="md-nav__link">
+  <a href="#regional-cluster" class="md-nav__link">
     <span class="md-ellipsis">
-      Storage Cluster
+      Regional Cluster
     </span>
   </a>
   
@@ -2255,8 +2255,12 @@ It enables centralized metrics, logging, and cost management
 through a unified <a href="https://opentelemetry.io/docs/">OpenTelemetry</a>-based architecture.</p>
 <h2 id="architecture">Architecture<a class="headerlink" href="#architecture" title="Permanent link">#</a></h2>
 <h3 id="high-level">High-level<a class="headerlink" href="#high-level" title="Permanent link">#</a></h3>
-<p>From a high-level perspective, KOF consists of three layers: Collection, where the statistics and events are gathered, Storage, to keep track of them, and Management, where you
-interact through the UI.</p>
+<p>From a high-level perspective, KOF consists of three layers:</p>
+<ul>
+<li>the Collection layer, where the statistics and events are gathered,</li>
+<li>the Regional layer, which includes storage to keep track of those statistics and events,</li>
+<li>and the Management layer, where you interact through the UI.</li>
+</ul>
 <div class="highlight"><pre><span></span><code>           ┌────────────────┐
            │   Management   │
            │   UI, promxy   │
@@ -2265,7 +2269,7 @@ interact through the UI.</p>
              ┌──────┴──────┐
              │             │
         ┌────┴─────┐ ┌─────┴────┐
-        │ Storage  │ │ Storage  │
+        │ Regional │ │ Regional │
         │ region 1 │ │ region 2 │
         └────┬─────┘ └─────┬────┘
              │             │
@@ -2303,7 +2307,7 @@ cloud 1...
 │
 │  region 1__________________________________________  region 2...
 │  │                                                │  │
-.  │  storage cluster_____________________          │  │
+.  │  regional cluster____________________          │  │
 .  │  │                                  │          │  │
 .  │  │  kof-storage chart_____________  │          │  .
    │  │  │                            │  │          │  .
@@ -2441,7 +2445,7 @@ kubectl<span class="w"> </span>create<span class="w"> </span>secret<span class="
 <p>It's important to understand that we override some <a href="https://github.com/k0rdent/kof/blob/main/charts/kof-mothership/values.yaml">default values</a> here:</p>
 <ul>
 <li><code>kcm.installTemplates</code> installs the templates such as <code>cert-manager</code> and <code>kof-storage</code> into the management cluster. This makes it possible to reference them from <code>.spec.serviceSpec.services[].template</code> in the AWS <code>ClusterDeployment</code> below.</li>
-<li><code>external-dns-aws-credentials</code> is a secret created in the <a href="#dns-auto-config">DNS auto-config</a> section and is auto-distributed to storage clusters by Sveltos. If you've opted out of <a href="#dns-auto-config">DNS auto-config</a> then don't add the <code>kof-aws-dns-secrets</code> cluster profile above.</li>
+<li><code>external-dns-aws-credentials</code> is a secret created in the <a href="#dns-auto-config">DNS auto-config</a> section and is auto-distributed to regional clusters by Sveltos. If you've opted out of <a href="#dns-auto-config">DNS auto-config</a> then don't add the <code>kof-aws-dns-secrets</code> cluster profile above.</li>
 <li><code>storage-vmuser-credentials</code> is a secret auto-created by default and auto-distributed to other clusters by the Sveltos <code>ClusterProfile</code> <a href="https://github.com/k0rdent/kof/blob/121b61f5f6de6ddfdf3525b98f3ad4cb8ce57eaa/charts/kof-mothership/values.yaml#L25-L31">here</a>.</li>
 <li><code>grafana-admin-credentials</code> is a secret auto-created by default <a href="https://github.com/k0rdent/kof/blob/121b61f5f6de6ddfdf3525b98f3ad4cb8ce57eaa/charts/kof-mothership/values.yaml#L64-L65">here</a>. We will use it in the <a href="#grafana">Grafana</a> section.</li>
 </ul>
@@ -2458,17 +2462,17 @@ kubectl<span class="w"> </span>create<span class="w"> </span>secret<span class="
 </code></pre></div></p>
 </li>
 </ol>
-<h3 id="storage-cluster">Storage Cluster<a class="headerlink" href="#storage-cluster" title="Permanent link">#</a></h3>
-<p>Now install KOF on the Storage cluster:</p>
+<h3 id="regional-cluster">Regional Cluster<a class="headerlink" href="#regional-cluster" title="Permanent link">#</a></h3>
+<p>Now install KOF on the Regional cluster:</p>
 <p>First look through the <a href="https://github.com/k0rdent/kof/blob/main/charts/kof-storage/values.yaml">default values</a> of the <code>kof-storage</code> chart.
 Apply the quick start example for AWS, or use it as a reference.</p>
 <ol>
 <li>
 <p>Set your KOF variables using your own values:
-    <div class="highlight"><pre><span></span><code><span class="nv">STORAGE_CLUSTER_NAME</span><span class="o">=</span>cloud1-region1
-<span class="nv">STORAGE_DOMAIN</span><span class="o">=</span><span class="nv">$STORAGE_CLUSTER_NAME</span>.kof.example.com
+    <div class="highlight"><pre><span></span><code><span class="nv">REGIONAL_CLUSTER_NAME</span><span class="o">=</span>cloud1-region1
+<span class="nv">REGIONAL_DOMAIN</span><span class="o">=</span><span class="nv">$REGIONAL_CLUSTER_NAME</span>.kof.example.com
 <span class="nv">ADMIN_EMAIL</span><span class="o">=</span><span class="k">$(</span>git<span class="w"> </span>config<span class="w"> </span>user.email<span class="k">)</span>
-<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$STORAGE_CLUSTER_NAME</span><span class="s2">, </span><span class="nv">$STORAGE_DOMAIN</span><span class="s2">, </span><span class="nv">$ADMIN_EMAIL</span><span class="s2">&quot;</span>
+<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$REGIONAL_CLUSTER_NAME</span><span class="s2">, </span><span class="nv">$REGIONAL_DOMAIN</span><span class="s2">, </span><span class="nv">$ADMIN_EMAIL</span><span class="s2">&quot;</span>
 </code></pre></div></p>
 </li>
 <li>
@@ -2480,15 +2484,15 @@ Apply the quick start example for AWS, or use it as a reference.</p>
 <li>
 <p>Compose the following objects:</p>
 <ul>
-<li><code>ClusterDeployment</code> - storage cluster</li>
+<li><code>ClusterDeployment</code> - regional cluster</li>
 <li><code>PromxyServerGroup</code> - for metrics</li>
 <li><code>GrafanaDatasource</code> - for logs</li>
 </ul>
-<div class="highlight"><pre><span></span><code>cat<span class="w"> </span>&gt;storage-cluster.yaml<span class="w"> </span><span class="s">&lt;&lt;EOF</span>
+<div class="highlight"><pre><span></span><code>cat<span class="w"> </span>&gt;regional-cluster.yaml<span class="w"> </span><span class="s">&lt;&lt;EOF</span>
 <span class="s">apiVersion: k0rdent.mirantis.com/v1alpha1</span>
 <span class="s">kind: ClusterDeployment</span>
 <span class="s">metadata:</span>
-<span class="s">  name: $STORAGE_CLUSTER_NAME</span>
+<span class="s">  name: $REGIONAL_CLUSTER_NAME</span>
 <span class="s">  namespace: kcm-system</span>
 <span class="s">  labels:</span>
 <span class="s">    kof: storage</span>
@@ -2532,14 +2536,14 @@ Apply the quick start example for AWS, or use it as a reference.</p>
 <span class="s">          victoriametrics:</span>
 <span class="s">            vmauth:</span>
 <span class="s">              ingress:</span>
-<span class="s">                host: vmauth.$STORAGE_DOMAIN</span>
+<span class="s">                host: vmauth.$REGIONAL_DOMAIN</span>
 <span class="s">            security:</span>
 <span class="s">              username_key: username</span>
 <span class="s">              password_key: password</span>
 <span class="s">              credentials_secret_name: storage-vmuser-credentials</span>
 <span class="s">          grafana:</span>
 <span class="s">            ingress:</span>
-<span class="s">              host: grafana.$STORAGE_DOMAIN</span>
+<span class="s">              host: grafana.$REGIONAL_DOMAIN</span>
 <span class="s">            security:</span>
 <span class="s">              credentials_secret_name: grafana-admin-credentials</span>
 <span class="s">          cert-manager:</span>
@@ -2554,9 +2558,9 @@ Apply the quick start example for AWS, or use it as a reference.</p>
 <span class="s">  name: promxyservergroup-sample</span>
 <span class="s">  namespace: kof</span>
 <span class="s">spec:</span>
-<span class="s">  cluster_name: $STORAGE_CLUSTER_NAME</span>
+<span class="s">  cluster_name: $REGIONAL_CLUSTER_NAME</span>
 <span class="s">  targets:</span>
-<span class="s">    - &quot;vmauth.$STORAGE_DOMAIN:443&quot;</span>
+<span class="s">    - &quot;vmauth.$REGIONAL_DOMAIN:443&quot;</span>
 <span class="s">  path_prefix: /vm/select/0/prometheus/</span>
 <span class="s">  scheme: https</span>
 <span class="s">  http_client:</span>
@@ -2573,7 +2577,7 @@ Apply the quick start example for AWS, or use it as a reference.</p>
 <span class="s">metadata:</span>
 <span class="s">  labels:</span>
 <span class="s">    app.kubernetes.io/managed-by: Helm</span>
-<span class="s">  name: victoria-logs-storage0</span>
+<span class="s">  name: victoria-logs-regional0</span>
 <span class="s">  namespace: kof</span>
 <span class="s">spec:</span>
 <span class="s">  valuesFrom:</span>
@@ -2588,8 +2592,8 @@ Apply the quick start example for AWS, or use it as a reference.</p>
 <span class="s">          key: password</span>
 <span class="s">          name: storage-vmuser-credentials</span>
 <span class="s">  datasource:</span>
-<span class="s">    name: $STORAGE_CLUSTER_NAME</span>
-<span class="s">    url: https://vmauth.$STORAGE_DOMAIN/vls</span>
+<span class="s">    name: $REGIONAL_CLUSTER_NAME</span>
+<span class="s">    url: https://vmauth.$REGIONAL_DOMAIN/vls</span>
 <span class="s">    access: proxy</span>
 <span class="s">    isDefault: false</span>
 <span class="s">    type: &quot;victoriametrics-logs-datasource&quot;</span>
@@ -2605,15 +2609,15 @@ Apply the quick start example for AWS, or use it as a reference.</p>
 </code></pre></div>
 </li>
 <li>
-<p>Verify and apply the Storage <code>ClusterDeployment</code>:
-    <div class="highlight"><pre><span></span><code>cat<span class="w"> </span>storage-cluster.yaml
+<p>Verify and apply the Regional <code>ClusterDeployment</code>:
+    <div class="highlight"><pre><span></span><code>cat<span class="w"> </span>regional-cluster.yaml
 
-kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>storage-cluster.yaml
+kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>regional-cluster.yaml
 </code></pre></div></p>
 </li>
 <li>
 <p>Watch how the cluster is deployed to AWS until all values of <code>READY</code> are <code>True</code>:
-    <div class="highlight"><pre><span></span><code>clusterctl<span class="w"> </span>describe<span class="w"> </span>cluster<span class="w"> </span>-n<span class="w"> </span>kcm-system<span class="w"> </span><span class="nv">$STORAGE_CLUSTER_NAME</span><span class="w"> </span><span class="se">\</span>
+    <div class="highlight"><pre><span></span><code>clusterctl<span class="w"> </span>describe<span class="w"> </span>cluster<span class="w"> </span>-n<span class="w"> </span>kcm-system<span class="w"> </span><span class="nv">$REGIONAL_CLUSTER_NAME</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--show-conditions<span class="w"> </span>all
 </code></pre></div></p>
 </li>
@@ -2629,9 +2633,9 @@ kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> <
 <p>Apply the next quick start example for AWS, or use it as a reference.</p>
 </li>
 <li>
-<p>Set your own value below, verifing <a href="#storage-cluster">the variables</a>:
-    <div class="highlight"><pre><span></span><code><span class="nv">CHILD_CLUSTER_NAME</span><span class="o">=</span><span class="nv">$STORAGE_CLUSTER_NAME</span>-child1
-<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$CHILD_CLUSTER_NAME</span><span class="s2">, </span><span class="nv">$STORAGE_DOMAIN</span><span class="s2">&quot;</span>
+<p>Set your own value below, verifing <a href="#regional-cluster">the variables</a>:
+    <div class="highlight"><pre><span></span><code><span class="nv">CHILD_CLUSTER_NAME</span><span class="o">=</span><span class="nv">$REGIONAL_CLUSTER_NAME</span>-child1
+<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$CHILD_CLUSTER_NAME</span><span class="s2">, </span><span class="nv">$REGIONAL_DOMAIN</span><span class="s2">&quot;</span>
 </code></pre></div></p>
 </li>
 <li>
@@ -2694,7 +2698,7 @@ kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> <
 <span class="s">                password_key: password</span>
 <span class="s">                existingSecretName: storage-vmuser-credentials</span>
 <span class="s">                external:</span>
-<span class="s">                  url: https://vmauth.$STORAGE_DOMAIN/vm/select/0/prometheus</span>
+<span class="s">                  url: https://vmauth.$REGIONAL_DOMAIN/vm/select/0/prometheus</span>
 <span class="s">              exporter:</span>
 <span class="s">                defaultClusterId: $CHILD_CLUSTER_NAME</span>
 <span class="s">          kof:</span>
@@ -2702,12 +2706,12 @@ kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> <
 <span class="s">              username_key: username</span>
 <span class="s">              password_key: password</span>
 <span class="s">              credentials_secret_name: storage-vmuser-credentials</span>
-<span class="s">              endpoint: https://vmauth.$STORAGE_DOMAIN/vls/insert/opentelemetry/v1/logs</span>
+<span class="s">              endpoint: https://vmauth.$REGIONAL_DOMAIN/vls/insert/opentelemetry/v1/logs</span>
 <span class="s">            metrics:</span>
 <span class="s">              username_key: username</span>
 <span class="s">              password_key: password</span>
 <span class="s">              credentials_secret_name: storage-vmuser-credentials</span>
-<span class="s">              endpoint: https://vmauth.$STORAGE_DOMAIN/vm/insert/0/prometheus/api/v1/write</span>
+<span class="s">              endpoint: https://vmauth.$REGIONAL_DOMAIN/vm/insert/0/prometheus/api/v1/write</span>
 <span class="s">EOF</span>
 </code></pre></div>
 </li>
@@ -2730,13 +2734,13 @@ kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> <
 <p><div class="highlight"><pre><span></span><code>kubectl<span class="w"> </span>get<span class="w"> </span>clustersummaries<span class="w"> </span>-A<span class="w"> </span>-o<span class="w"> </span>wide
 </code></pre></div>
 Wait until the value of <code>HELMCHARTS</code> changes from <code>Provisioning</code> to <code>Provisioned</code>.</p>
-<p><div class="highlight"><pre><span></span><code>kubectl<span class="w"> </span>get<span class="w"> </span>secret<span class="w"> </span>-n<span class="w"> </span>kcm-system<span class="w"> </span><span class="nv">$STORAGE_CLUSTER_NAME</span>-kubeconfig<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-o<span class="o">=</span><span class="nv">jsonpath</span><span class="o">={</span>.data.value<span class="o">}</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>base64<span class="w"> </span>-d<span class="w"> </span>&gt;<span class="w"> </span>storage-kubeconfig
+<p><div class="highlight"><pre><span></span><code>kubectl<span class="w"> </span>get<span class="w"> </span>secret<span class="w"> </span>-n<span class="w"> </span>kcm-system<span class="w"> </span><span class="nv">$REGIONAL_CLUSTER_NAME</span>-kubeconfig<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-o<span class="o">=</span><span class="nv">jsonpath</span><span class="o">={</span>.data.value<span class="o">}</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>base64<span class="w"> </span>-d<span class="w"> </span>&gt;<span class="w"> </span>regional-kubeconfig
 
 kubectl<span class="w"> </span>get<span class="w"> </span>secret<span class="w"> </span>-n<span class="w"> </span>kcm-system<span class="w"> </span><span class="nv">$CHILD_CLUSTER_NAME</span>-kubeconfig<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-o<span class="o">=</span><span class="nv">jsonpath</span><span class="o">={</span>.data.value<span class="o">}</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>base64<span class="w"> </span>-d<span class="w"> </span>&gt;<span class="w"> </span>child-kubeconfig
 
-<span class="nv">KUBECONFIG</span><span class="o">=</span>storage-kubeconfig<span class="w"> </span>kubectl<span class="w"> </span>get<span class="w"> </span>pod<span class="w"> </span>-A
+<span class="nv">KUBECONFIG</span><span class="o">=</span>regional-kubeconfig<span class="w"> </span>kubectl<span class="w"> </span>get<span class="w"> </span>pod<span class="w"> </span>-A
 <span class="w">  </span><span class="c1"># Namespaces: cert-manager, ingress-nginx, kof, kube-system, projectsveltos</span>
 
 <span class="nv">KUBECONFIG</span><span class="o">=</span>child-kubeconfig<span class="w"> </span>kubectl<span class="w"> </span>get<span class="w"> </span>pod<span class="w"> </span>-A
@@ -2748,15 +2752,15 @@ Wait for all pods to show as <code>Running</code>.</p>
 <ol>
 <li>
 <p>Get the <code>EXTERNAL-IP</code> of <code>ingress-nginx</code>:
-    <div class="highlight"><pre><span></span><code><span class="nv">KUBECONFIG</span><span class="o">=</span>storage-kubeconfig<span class="w"> </span>kubectl<span class="w"> </span>get<span class="w"> </span>svc<span class="w"> </span><span class="se">\</span>
+    <div class="highlight"><pre><span></span><code><span class="nv">KUBECONFIG</span><span class="o">=</span>regional-kubeconfig<span class="w"> </span>kubectl<span class="w"> </span>get<span class="w"> </span>svc<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-n<span class="w"> </span>ingress-nginx<span class="w"> </span>ingress-nginx-controller
 </code></pre></div>
     It should look like <code>REDACTED.us-east-2.elb.amazonaws.com</code></p>
 </li>
 <li>
 <p>Create these DNS records of type <code>A</code>, both pointing to that <code>EXTERNAL-IP</code>:
-    <div class="highlight"><pre><span></span><code><span class="nb">echo</span><span class="w"> </span>vmauth.<span class="nv">$STORAGE_DOMAIN</span>
-<span class="nb">echo</span><span class="w"> </span>grafana.<span class="nv">$STORAGE_DOMAIN</span>
+    <div class="highlight"><pre><span></span><code><span class="nb">echo</span><span class="w"> </span>vmauth.<span class="nv">$REGIONAL_DOMAIN</span>
+<span class="nb">echo</span><span class="w"> </span>grafana.<span class="nv">$REGIONAL_DOMAIN</span>
 </code></pre></div></p>
 </li>
 </ol>
@@ -2778,7 +2782,7 @@ kubectl<span class="w"> </span>port-forward<span class="w"> </span>-n<span class
 <p>Now open <a href="http://127.0.0.1:8081/login">http://127.0.0.1:8081/login</a> and paste the token output in step 1 above.</p>
 </li>
 <li>Open the <code>ClusterAPI</code> tab: <a href="http://127.0.0.1:8081/sveltos/clusters/ClusterAPI/1">http://127.0.0.1:8081/sveltos/clusters/ClusterAPI/1</a></li>
-<li>Check both storage and child clusters:<ul>
+<li>Check both regional and child clusters:<ul>
 <li>Cluster profiles should be <code>Provisioned</code>.</li>
 <li>Secrets should be distributed.</li>
 </ul>
@@ -2836,8 +2840,8 @@ kubectl<span class="w"> </span>port-forward<span class="w"> </span>-n<span class
 <p>The method for scaling KOF depends on the type of expansion:</p>
 <h3 id="regional-expansion">Regional Expansion<a class="headerlink" href="#regional-expansion" title="Permanent link">#</a></h3>
 <ol>
-<li>Deploy a <a href="#storage-cluster">Storage Cluster</a> in the new region</li>
-<li>Configure child clusters in this region to point to this storage cluster</li>
+<li>Deploy a <a href="#regional-cluster">Regional Cluster</a> in the new region</li>
+<li>Configure child clusters in this region to point to this regional cluster</li>
 </ol>
 <h3 id="adding-a-new-child-cluster">Adding a New Child Cluster<a class="headerlink" href="#adding-a-new-child-cluster" title="Permanent link">#</a></h3>
 <ol>
@@ -2868,7 +2872,7 @@ kubectl<span class="w"> </span>port-forward<span class="w"> </span>-n<span class
 Make sure these are just your demo clusters and do not contain important data.</p>
 </div>
 <div class="highlight"><pre><span></span><code>kubectl<span class="w"> </span>delete<span class="w"> </span>-f<span class="w"> </span>child-cluster.yaml
-kubectl<span class="w"> </span>delete<span class="w"> </span>-f<span class="w"> </span>storage-cluster.yaml
+kubectl<span class="w"> </span>delete<span class="w"> </span>-f<span class="w"> </span>regional-cluster.yaml
 </code></pre></div>
 <p>To remove KOF, use helm:</p>
 <div class="highlight"><pre><span></span><code>helm<span class="w"> </span>uninstall<span class="w"> </span>-n<span class="w"> </span>kof<span class="w"> </span>kof-mothership
