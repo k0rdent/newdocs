@@ -583,6 +583,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#create-the-configmap-resource-template-object" class="md-nav__link">
+    <span class="md-ellipsis">
+      Create the ConfigMap resource-template Object
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#find-your-locationregion" class="md-nav__link">
     <span class="md-ellipsis">
       Find your location/region
@@ -1714,6 +1723,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#create-the-configmap-resource-template-object" class="md-nav__link">
+    <span class="md-ellipsis">
+      Create the ConfigMap resource-template Object
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#find-your-locationregion" class="md-nav__link">
     <span class="md-ellipsis">
       Find your location/region
@@ -1984,6 +2002,71 @@ Note: for AKS we also need to create Cluster Identity resource template ConfigMa
 <p>You should see output resembling this:</p>
 <div class="highlight"><pre><span></span><code><span class="go">credential.k0rdent.mirantis.com/azure-cluster-identity-cred created</span>
 </code></pre></div>
+<h2 id="create-the-configmap-resource-template-object">Create the <code>ConfigMap</code> resource-template Object<a class="headerlink" href="#create-the-configmap-resource-template-object" title="Permanent link">#</a></h2>
+<p>Create a YAML with the specification of our resource-template and save it as
+<code>azure-cluster-identity-resource-template.yaml</code></p>
+<div class="highlight"><pre><span></span><code><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">v1</span>
+<span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ConfigMap</span>
+<span class="nt">metadata</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">azure-cluster-identity-resource-template</span>
+<span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kcm-system</span>
+<span class="w">  </span><span class="nt">labels</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">k0rdent.mirantis.com/component</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;kcm&quot;</span>
+<span class="w">  </span><span class="nt">annotations</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">projectsveltos.io/template</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;true&quot;</span>
+<span class="nt">data</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">configmap.yaml</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">    </span><span class="no">{{- $cluster := .InfrastructureProvider -}}</span>
+<span class="w">    </span><span class="no">{{- $identity := (getResource &quot;InfrastructureProviderIdentity&quot;) -}}</span>
+<span class="w">    </span><span class="no">{{- $secret := (getResource &quot;InfrastructureProviderIdentitySecret&quot;) -}}</span>
+<span class="w">    </span><span class="no">{{- $subnetName := &quot;&quot; -}}</span>
+<span class="w">    </span><span class="no">{{- $securityGroupName := &quot;&quot; -}}</span>
+<span class="w">    </span><span class="no">{{- $routeTableName := &quot;&quot; -}}</span>
+<span class="w">    </span><span class="no">{{- range $cluster.spec.networkSpec.subnets -}}</span>
+<span class="w">      </span><span class="no">{{- if eq .role &quot;node&quot; -}}</span>
+<span class="w">        </span><span class="no">{{- $subnetName = .name -}}</span>
+<span class="w">        </span><span class="no">{{- $securityGroupName = .securityGroup.name -}}</span>
+<span class="w">        </span><span class="no">{{- $routeTableName = .routeTable.name -}}</span>
+<span class="w">        </span><span class="no">{{- break -}}</span>
+<span class="w">      </span><span class="no">{{- end -}}</span>
+<span class="w">    </span><span class="no">{{- end -}}</span>
+<span class="w">    </span><span class="no">{{- $cloudConfig := dict</span>
+<span class="w">      </span><span class="no">&quot;aadClientId&quot; $identity.spec.clientID</span>
+<span class="w">      </span><span class="no">&quot;aadClientSecret&quot; (index $secret.data &quot;clientSecret&quot; | b64dec)</span>
+<span class="w">      </span><span class="no">&quot;cloud&quot; $cluster.spec.azureEnvironment</span>
+<span class="w">      </span><span class="no">&quot;loadBalancerName&quot; &quot;&quot;</span>
+<span class="w">      </span><span class="no">&quot;loadBalancerSku&quot; &quot;Standard&quot;</span>
+<span class="w">      </span><span class="no">&quot;location&quot; $cluster.spec.location</span>
+<span class="w">      </span><span class="no">&quot;maximumLoadBalancerRuleCount&quot; 250</span>
+<span class="w">      </span><span class="no">&quot;resourceGroup&quot; $cluster.spec.resourceGroup</span>
+<span class="w">      </span><span class="no">&quot;routeTableName&quot; $routeTableName</span>
+<span class="w">      </span><span class="no">&quot;securityGroupName&quot; $securityGroupName</span>
+<span class="w">      </span><span class="no">&quot;securityGroupResourceGroup&quot; $cluster.spec.networkSpec.vnet.resourceGroup</span>
+<span class="w">      </span><span class="no">&quot;subnetName&quot; $subnetName</span>
+<span class="w">      </span><span class="no">&quot;subscriptionId&quot; $cluster.spec.subscriptionID</span>
+<span class="w">      </span><span class="no">&quot;tenantId&quot; $identity.spec.tenantID</span>
+<span class="w">      </span><span class="no">&quot;useInstanceMetadata&quot; true</span>
+<span class="w">      </span><span class="no">&quot;useManagedIdentityExtension&quot; false</span>
+<span class="w">      </span><span class="no">&quot;vmType&quot; &quot;vmss&quot;</span>
+<span class="w">      </span><span class="no">&quot;vnetName&quot; $cluster.spec.networkSpec.vnet.name</span>
+<span class="w">      </span><span class="no">&quot;vnetResourceGroup&quot; $cluster.spec.networkSpec.vnet.resourceGroup</span>
+<span class="w">    </span><span class="no">-}}</span>
+<span class="w">    </span><span class="no">---</span>
+<span class="w">    </span><span class="no">apiVersion: v1</span>
+<span class="w">    </span><span class="no">kind: Secret</span>
+<span class="w">    </span><span class="no">metadata:</span>
+<span class="w">      </span><span class="no">name: azure-cloud-provider</span>
+<span class="w">      </span><span class="no">namespace: kube-system</span>
+<span class="w">    </span><span class="no">type: Opaque</span>
+<span class="w">    </span><span class="no">data:</span>
+<span class="w">      </span><span class="no">cloud-config: {{ $cloudConfig | toJson | b64enc }}</span>
+</code></pre></div>
+<p>Object name needs to be exactly <code>azure-cluster-identity-resource-template.yaml</code>, <code>AzureClusterIdentity</code> object name + <code>-resource-template</code> string suffix.</p>
+<p>Apply the YAML to your cluster:</p>
+<p><div class="highlight"><pre><span></span><code>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>azure-cluster-identity-resource-template.yaml
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="go">configmap/azure-cluster-identity-resource-template created</span>
+</code></pre></div></p>
 <h2 id="find-your-locationregion">Find your location/region<a class="headerlink" href="#find-your-locationregion" title="Permanent link">#</a></h2>
 <p>To determine where to deploy your cluster, you may wish to begin by listing your Azure location/regions:</p>
 <div class="highlight"><pre><span></span><code>az<span class="w"> </span>account<span class="w"> </span>list-locations<span class="w"> </span>-o<span class="w"> </span>table
