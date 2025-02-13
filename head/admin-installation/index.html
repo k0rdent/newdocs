@@ -1818,7 +1818,7 @@ Make sure to specify the correct release version number.</p>
 </div>
 <p>The helm chart deploys the KCM operator and prepares the environment, and KCM then proceeds to deploy the various subcomponents, including CAPI. The entire process takes a few minutes.</p>
 <h2 id="confirming-the-deployment">Confirming the deployment<a class="headerlink" href="#confirming-the-deployment" title="Permanent link">#</a></h2>
-<p>To understand whether installation is complete, start by making sure all pods are ready in the <code>kcm-system</code> namespace. There should be 15:</p>
+<p>To understand whether installation is complete, start by making sure all pods are ready in the <code>kcm-system</code> namespace. There should be 17:</p>
 <p><div class="highlight"><pre><span></span><code>kubectl<span class="w"> </span>get<span class="w"> </span>pods<span class="w"> </span>-n<span class="w"> </span>kcm-system
 </code></pre></div>
 <div class="highlight"><pre><span></span><code><span class="go">NAME                                                          READY   STATUS    RESTARTS   AGE</span>
