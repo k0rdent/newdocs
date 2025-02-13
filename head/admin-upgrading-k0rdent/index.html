@@ -1532,14 +1532,14 @@ kubectl<span class="w"> </span>create<span class="w"> </span>-f<span class="w"> 
 <p>Patch the <code>Management</code> object with the new <code>Release</code></p>
 <p>Update the <code>spec.release</code> field in the <code>Management</code> object to point to the new release. Replace <code>&lt;release-name&gt;</code> with the name of your desired release:</p>
 <div class="highlight"><pre><span></span><code><span class="nv">RELEASE_NAME</span><span class="o">=</span>kcm-0-1-0
-kubectl<span class="w"> </span>patch<span class="w"> </span>management.kcm<span class="w"> </span>kcm<span class="w"> </span>--patch<span class="w"> </span><span class="s2">&quot;{\&quot;spec\&quot;:{\&quot;release\&quot;:\&quot;</span><span class="si">${</span><span class="nv">RELEASE_NAME</span><span class="si">}</span><span class="s2">\&quot;}}&quot;</span><span class="w"> </span>--type<span class="o">=</span>merge
+kubectl<span class="w"> </span>patch<span class="w"> </span>managements.k0rdent.mirantis.com<span class="w"> </span>kcm<span class="w"> </span>--patch<span class="w"> </span><span class="s2">&quot;{\&quot;spec\&quot;:{\&quot;release\&quot;:\&quot;</span><span class="si">${</span><span class="nv">RELEASE_NAME</span><span class="si">}</span><span class="s2">\&quot;}}&quot;</span><span class="w"> </span>--type<span class="o">=</span>merge
 </code></pre></div>
 </li>
 <li>
 <p>Verify the Upgrade</p>
 <p>Although the change will be made immediately, it will take some time for k0rdent to update the components it should be
 using. Monitor the readiness of the <code>Management</code> object to ensure the upgrade was successful. For example:</p>
-<div class="highlight"><pre><span></span><code>kubectl<span class="w"> </span>get<span class="w"> </span>management.kcm<span class="w"> </span>kcm
+<div class="highlight"><pre><span></span><code>kubectl<span class="w"> </span>get<span class="w"> </span>managements.k0rdent.mirantis.com<span class="w"> </span>kcm
 NAME<span class="w">   </span>READY<span class="w">   </span>RELEASE<span class="w">     </span>AGE
 kcm<span class="w">    </span>True<span class="w">    </span>kcm-0-1-0<span class="w">   </span>4m34s
 </code></pre></div>
