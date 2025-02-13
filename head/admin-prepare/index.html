@@ -2274,6 +2274,8 @@ network.</p>
 <span class="nt">metadata</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">vsphere-cluster-identity-secret</span>
 <span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kcm-system</span>
+<span class="w">  </span><span class="nt">labels</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">k0rdent.mirantis.com/component</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;kcm&quot;</span>
 <span class="nt">stringData</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">username</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;USERNAME&gt;</span>
 <span class="w">  </span><span class="nt">password</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;PASSWORD&gt;</span>
@@ -2291,6 +2293,9 @@ network.</p>
 <span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">VSphereClusterIdentity</span>
 <span class="nt">metadata</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">vsphere-cluster-identity</span>
+<span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kcm-system</span>
+<span class="w">  </span><span class="nt">labels</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">k0rdent.mirantis.com/component</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;kcm&quot;</span>
 <span class="nt">spec</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">secretName</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">vsphere-cluster-identity-secret</span>
 <span class="w">  </span><span class="nt">allowedNamespaces</span><span class="p">:</span>
@@ -2317,10 +2322,84 @@ needs to match the <code>.metadata.name</code> for the <code>Secret</code>.</p>
 <span class="w">    </span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">infrastructure.cluster.x-k8s.io/v1beta1</span>
 <span class="w">    </span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">VSphereClusterIdentity</span>
 <span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">vsphere-cluster-identity</span>
+<span class="w">    </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kcm-system</span>
 </code></pre></div>
 Again, <code>.spec.identityRef.name</code> must match the <code>.metadata.name</code> of the <code>VSphereClusterIdentity</code> object you just created.</p>
 <p>Apply the YAML to your cluster:</p>
 <div class="highlight"><pre><span></span><code>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>vsphere-cluster-identity-cred.yaml
+</code></pre></div>
+</li>
+<li>
+<p>Create the <code>ConfigMap</code> resource-template Object</p>
+<p>Create a YAML with the specification of our resource-template and save it as
+<code>vsphere-cluster-identity-resource-template.yaml</code></p>
+<p><div class="highlight"><pre><span></span><code><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">v1</span>
+<span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ConfigMap</span>
+<span class="nt">metadata</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">vsphere-cluster-identity-resource-template</span>
+<span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kcm-system</span>
+<span class="w">  </span><span class="nt">labels</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">k0rdent.mirantis.com/component</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;kcm&quot;</span>
+<span class="w">  </span><span class="nt">annotations</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">projectsveltos.io/template</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;true&quot;</span>
+<span class="nt">data</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">configmap.yaml</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">    </span><span class="no">{{- $cluster := .InfrastructureProvider -}}</span>
+<span class="w">    </span><span class="no">{{- $identity := (getResource &quot;InfrastructureProviderIdentity&quot;) -}}</span>
+<span class="w">    </span><span class="no">{{- $secret := (getResource &quot;InfrastructureProviderIdentitySecret&quot;) -}}</span>
+<span class="w">    </span><span class="no">---</span>
+<span class="w">    </span><span class="no">apiVersion: v1</span>
+<span class="w">    </span><span class="no">kind: Secret</span>
+<span class="w">    </span><span class="no">metadata:</span>
+<span class="w">      </span><span class="no">name: vsphere-cloud-secret</span>
+<span class="w">      </span><span class="no">namespace: kube-system</span>
+<span class="w">    </span><span class="no">type: Opaque</span>
+<span class="w">    </span><span class="no">data:</span>
+<span class="w">      </span><span class="no">{{ printf &quot;%s.username&quot; $cluster.spec.server }}: {{ index $secret.data &quot;username&quot; }}</span>
+<span class="w">      </span><span class="no">{{ printf &quot;%s.password&quot; $cluster.spec.server }}: {{ index $secret.data &quot;password&quot; }}</span>
+<span class="w">    </span><span class="no">---</span>
+<span class="w">    </span><span class="no">apiVersion: v1</span>
+<span class="w">    </span><span class="no">kind: Secret</span>
+<span class="w">    </span><span class="no">metadata:</span>
+<span class="w">      </span><span class="no">name: vcenter-config-secret</span>
+<span class="w">      </span><span class="no">namespace: kube-system</span>
+<span class="w">    </span><span class="no">type: Opaque</span>
+<span class="w">    </span><span class="no">stringData:</span>
+<span class="w">      </span><span class="no">csi-vsphere.conf: |</span>
+<span class="w">        </span><span class="no">[Global]</span>
+<span class="w">        </span><span class="no">cluster-id = &quot;{{ $cluster.metadata.name }}&quot;</span>
+
+<span class="w">        </span><span class="no">[VirtualCenter &quot;{{ $cluster.spec.server }}&quot;]</span>
+<span class="w">        </span><span class="no">insecure-flag = &quot;true&quot;</span>
+<span class="w">        </span><span class="no">user = &quot;{{ index $secret.data &quot;username&quot; | b64dec }}&quot;</span>
+<span class="w">        </span><span class="no">password = &quot;{{ index $secret.data &quot;password&quot; | b64dec }}&quot;</span>
+<span class="w">        </span><span class="no">port = &quot;443&quot;</span>
+<span class="w">        </span><span class="no">datacenters = ${VSPHERE_DATACENTER}</span>
+<span class="w">    </span><span class="no">---</span>
+<span class="w">    </span><span class="no">apiVersion: v1</span>
+<span class="w">    </span><span class="no">kind: ConfigMap</span>
+<span class="w">    </span><span class="no">metadata:</span>
+<span class="w">      </span><span class="no">name: cloud-config</span>
+<span class="w">      </span><span class="no">namespace: kube-system</span>
+<span class="w">    </span><span class="no">data:</span>
+<span class="w">      </span><span class="no">vsphere.conf: |</span>
+<span class="w">        </span><span class="no">global:</span>
+<span class="w">          </span><span class="no">insecureFlag: true</span>
+<span class="w">          </span><span class="no">port: 443</span>
+<span class="w">          </span><span class="no">secretName: vsphere-cloud-secret</span>
+<span class="w">          </span><span class="no">secretNamespace: kube-system</span>
+<span class="w">        </span><span class="no">labels:</span>
+<span class="w">          </span><span class="no">region: k8s-region</span>
+<span class="w">          </span><span class="no">zone: k8s-zone</span>
+<span class="w">        </span><span class="no">vcenter:</span>
+<span class="w">          </span><span class="no">{{ $cluster.spec.server }}:</span>
+<span class="w">            </span><span class="no">datacenters:</span>
+<span class="w">              </span><span class="no">- ${VSPHERE_DATACENTER}</span>
+<span class="w">            </span><span class="no">server: {{ $cluster.spec.server }}</span>
+</code></pre></div>
+Object name needs to be exactly <code>vsphere-cluster-identity-resource-template</code>, <code>VSphereClusterIdentity</code> object name + <code>-resource-template</code> string suffix.</p>
+<p>Apply the YAML to your cluster:</p>
+<div class="highlight"><pre><span></span><code>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>vsphere-cluster-identity-resource-template.yaml
 </code></pre></div>
 </li>
 <li>
@@ -2352,6 +2431,9 @@ specific information:</p>
 <span class="w">  </span><span class="nt">template</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">vsphere-standalone-cp-0-1-0</span>
 <span class="w">  </span><span class="nt">credential</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">vsphere-cluster-identity-cred</span>
 <span class="w">  </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">clusterLabels</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{}</span>
+<span class="w">    </span><span class="nt">controlPlaneNumber</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
+<span class="w">    </span><span class="nt">workersNumber</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
 <span class="w">    </span><span class="nt">vsphere</span><span class="p">:</span>
 <span class="w">      </span><span class="nt">server</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;VSPHERE_SERVER&gt;</span>
 <span class="w">      </span><span class="nt">thumbprint</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;VSPHERE_THUMBPRINT&gt;</span>
@@ -2359,17 +2441,25 @@ specific information:</p>
 <span class="w">      </span><span class="nt">datastore</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;VSPHERE_DATASTORE&gt;</span>
 <span class="w">      </span><span class="nt">resourcePool</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;VSPHERE_RESOURCEPOOL&gt;</span>
 <span class="w">      </span><span class="nt">folder</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;VSPHERE_FOLDER&gt;</span>
+<span class="w">      </span><span class="nt">username</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${VSPHERE_USER}</span>
+<span class="w">      </span><span class="nt">password</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${VSPHERE_PASSWORD}</span>
 <span class="w">    </span><span class="nt">controlPlaneEndpointIP</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;VSPHERE_CONTROL_PLANE_ENDPOINT&gt;</span>
 <span class="w">    </span><span class="nt">controlPlane</span><span class="p">:</span>
 <span class="w">      </span><span class="nt">ssh</span><span class="p">:</span>
 <span class="w">        </span><span class="nt">user</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ubuntu</span>
 <span class="w">        </span><span class="nt">publicKey</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;VSPHERE_SSH_KEY&gt;</span>
+<span class="w">      </span><span class="nt">rootVolumeSize</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">50</span>
+<span class="w">      </span><span class="nt">cpus</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">4</span>
+<span class="w">      </span><span class="nt">memory</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">4096</span>
 <span class="w">      </span><span class="nt">vmTemplate</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;VSPHERE_VM_TEMPLATE&gt;</span>
 <span class="w">      </span><span class="nt">network</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;VSPHERE_NETWORK&gt;</span>
 <span class="w">    </span><span class="nt">worker</span><span class="p">:</span>
 <span class="w">      </span><span class="nt">ssh</span><span class="p">:</span>
 <span class="w">        </span><span class="nt">user</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ubuntu</span>
 <span class="w">        </span><span class="nt">publicKey</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;VSPHERE_SSH_KEY&gt;</span>
+<span class="w">      </span><span class="nt">rootVolumeSize</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">50</span>
+<span class="w">      </span><span class="nt">cpus</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">4</span>
+<span class="w">      </span><span class="nt">memory</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">4096</span>
 <span class="w">      </span><span class="nt">vmTemplate</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;VSPHERE_VM_TEMPLATE&gt;</span>
 <span class="w">      </span><span class="nt">network</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;VSPHERE_NETWORK&gt;</span>
 </code></pre></div>
