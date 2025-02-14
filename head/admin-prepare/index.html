@@ -1745,6 +1745,8 @@ aws<span class="w"> </span>iam<span class="w"> </span>attach-user-policy<span cl
 <span class="nt">metadata</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">aws-cluster-identity-secret</span>
 <span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kcm-system</span>
+<span class="w">  </span><span class="nt">labels</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">k0rdent.mirantis.com/component</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;kcm&quot;</span>
 <span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Opaque</span>
 <span class="nt">stringData</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">AccessKeyID</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">EXAMPLE_ACCESS_KEY_ID</span>
@@ -1761,6 +1763,8 @@ aws<span class="w"> </span>iam<span class="w"> </span>attach-user-policy<span cl
 <span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">AWSClusterStaticIdentity</span>
 <span class="nt">metadata</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">aws-cluster-identity</span>
+<span class="w">  </span><span class="nt">labels</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">k0rdent.mirantis.com/component</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;kcm&quot;</span>
 <span class="nt">spec</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">secretRef</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">aws-cluster-identity-secret</span>
 <span class="w">  </span><span class="nt">allowedNamespaces</span><span class="p">:</span>
@@ -1770,6 +1774,23 @@ aws<span class="w"> </span>iam<span class="w"> </span>attach-user-policy<span cl
 <p>Notice that the <code>secretRef</code> references the <code>Secret</code> you created in the previous step.</p>
 <p>Apply the YAML to your cluster, again adding it to the <code>kcm-system</code> namespace.</p>
 <div class="highlight"><pre><span></span><code>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>aws-cluster-identity.yaml<span class="w">  </span>-n<span class="w"> </span>kcm-system
+</code></pre></div>
+</li>
+<li>
+<p>Create the Cluster Identity resource template <code>ConfigMap</code></p>
+<p>Now we create Cluster Identity resource template <code>ConfigMap</code>. As in prior steps, create a YAML file called <code>aws-cluster-identity-resource-template.yaml</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">v1</span>
+<span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ConfigMap</span>
+<span class="nt">metadata</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">aws-cluster-identity-resource-template</span>
+<span class="w">  </span><span class="nt">labels</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">k0rdent.mirantis.com/component</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;kcm&quot;</span>
+<span class="w">  </span><span class="nt">annotations</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">projectsveltos.io/template</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;true&quot;</span>
+</code></pre></div>
+<p>Note that <code>ConfigMap</code> is empty, this is expected, we don't need to template any object inside child cluster(s), but we can use that object in the future if need arises.</p>
+<p>Apply the YAML to your cluster, again keeping it in the <code>kcm-system</code> namespace:</p>
+<div class="highlight"><pre><span></span><code>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>aws-cluster-identity-resource-template.yaml<span class="w"> </span>-n<span class="w"> </span>kcm-system
 </code></pre></div>
 </li>
 <li>
