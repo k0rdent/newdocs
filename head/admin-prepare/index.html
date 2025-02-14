@@ -1873,7 +1873,7 @@ When the cluster is <code>Ready</code>, you can access it via the kubeconfig, as
 <li>
 <p>Cleanup</p>
 <p>When you've established that it's working properly, you can delete the managed cluster and its AWS objects:</p>
-<div class="highlight"><pre><span></span><code>kubectl<span class="w"> </span>delete<span class="w"> </span>ClusterDeployment<span class="w"> </span>my-aws-clusterdeployment1<span class="w"> </span>
+<div class="highlight"><pre><span></span><code>kubectl<span class="w"> </span>delete<span class="w"> </span>clusterdeployments<span class="w"> </span>my-aws-clusterdeployment1<span class="w"> </span>
 </code></pre></div>
 </li>
 </ol>
@@ -2159,19 +2159,19 @@ exceed your quotas. If you are near the top of your quotas, requesting an increa
 <li>
 <p>Cleanup</p>
 <p>To clean up Azure resources, delete the child cluster by deleting the <code>ClusterDeployment</code>:</p>
-<p><div class="highlight"><pre><span></span><code>kubectl<span class="w"> </span>get<span class="w"> </span>ClusterDeployments<span class="w"> </span>-A
+<p><div class="highlight"><pre><span></span><code>kubectl<span class="w"> </span>get<span class="w"> </span>clusterdeployments<span class="w"> </span>-A
 </code></pre></div>
 <div class="highlight"><pre><span></span><code><span class="go">NAMESPACE    NAME                          READY   STATUS</span>
 <span class="go">kcm-system   my-azure-clusterdeployment1   True    ClusterDeployment is ready</span>
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>kubectl<span class="w"> </span>delete<span class="w"> </span>ClusterDeployment<span class="w"> </span>my-azure-clusterdeployment1<span class="w"> </span>-n<span class="w"> </span>kcm-system
+<div class="highlight"><pre><span></span><code>kubectl<span class="w"> </span>delete<span class="w"> </span>clusterdeployments<span class="w"> </span>my-azure-clusterdeployment1<span class="w"> </span>-n<span class="w"> </span>kcm-system
 </code></pre></div>
 <div class="highlight"><pre><span></span><code><span class="go">clusterdeployment.k0rdent.mirantis.com &quot;my-azure-clusterdeployment1&quot; deleted</span>
 </code></pre></div></p>
 </li>
 </ol>
 <h2 id="openstack">OpenStack<a class="headerlink" href="#openstack" title="Permanent link">#</a></h2>
-<p>k0rdent is able to deploy child clusters on OpenStack virtual machines. Follow these steps to make it possible to deploy to OpenStack:</p>
+<p>k0rdent can deploy child clusters on OpenStack virtual machines. Follow these steps to configure and deploy OpenStack clusters for your users:</p>
 <ol>
 <li>
 <p>Install k0rdent</p>
@@ -2184,14 +2184,14 @@ exceed your quotas. If you are near the top of your quotas, requesting an increa
 </li>
 <li>
 <p>Configure the OpenStack Application Credential</p>
-<p>This credential should include:</p>
+<p>The exported list of variables should include:</p>
 <div class="highlight"><pre><span></span><code>OS_AUTH_URL
 OS_APPLICATION_CREDENTIAL_ID
 OS_APPLICATION_CREDENTIAL_SECRET
 OS_REGION_NAME
 OS_INTERFACE
 OS_IDENTITY_API_VERSION
-OS_AUTH_TYPE<span class="w"> </span><span class="o">(</span>e.g.<span class="w"> </span>v3applicationcredential<span class="o">)</span>
+OS_AUTH_TYPE
 </code></pre></div>
 <p>While it's possible to use a username and password instead of the Application Credential &mdash; adjust your YAML accordingly &mdash; an Application Credential is strongly recommended because it limits scope and improves security over a raw username/password approach.</p>
 </li>
@@ -2204,6 +2204,8 @@ where appropriate. Save this as <code>openstack-cloud-config.yaml</code>:</p>
 <span class="nt">metadata</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">openstack-cloud-config</span>
 <span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kcm-system</span>
+<span class="w">  </span><span class="nt">labels</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">k0rdent.mirantis.com/component</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;kcm&quot;</span>
 <span class="nt">stringData</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">clouds.yaml</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
 <span class="w">    </span><span class="no">clouds:</span>
@@ -2230,6 +2232,8 @@ Save this as <code>openstack-cluster-identity-cred.yaml</code>:</p>
 <span class="nt">metadata</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">openstack-cluster-identity-cred</span>
 <span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kcm-system</span>
+<span class="w">  </span><span class="nt">labels</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">k0rdent.mirantis.com/component</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;kcm&quot;</span><span class="w">  </span>
 <span class="nt">spec</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;OpenStack</span><span class="nv"> </span><span class="s">credentials&quot;</span>
 <span class="w">  </span><span class="nt">identityRef</span><span class="p">:</span>
@@ -2243,6 +2247,87 @@ Save this as <code>openstack-cluster-identity-cred.yaml</code>:</p>
 </code></pre></div>
 <p>Note that <code>.spec.identityRef.name</code> must match the <code>Secret</code> you created in the previous step, and 
 <code>.spec.identityRef.namespace</code> must be the same as the one that includes the <code>Secret</code> (<code>kcm-system</code>).</p>
+</li>
+<li>
+<p>Create the ConfigMap resource-template object</p>
+<p>Create a YAML file with the specification of the resource-template and save it as <code>openstack-cluster-identity-resource-template.yaml</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">v1</span>
+<span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ConfigMap</span>
+<span class="nt">metadata</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">openstack-cloud-config-resource-template</span>
+<span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kcm-system</span>
+<span class="w">  </span><span class="nt">labels</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">k0rdent.mirantis.com/component</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;kcm&quot;</span>
+<span class="w">  </span><span class="nt">annotations</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">projectsveltos.io/template</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;true&quot;</span>
+<span class="nt">data</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">configmap.yaml</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">    </span><span class="no">{{- $cluster := .InfrastructureProvider -}}</span>
+<span class="w">    </span><span class="no">{{- $identity := (getResource &quot;InfrastructureProviderIdentity&quot;) -}}</span>
+
+<span class="w">    </span><span class="no">{{- $clouds := fromYaml (index $identity &quot;data&quot; &quot;clouds.yaml&quot; | b64dec) -}}</span>
+<span class="w">    </span><span class="no">{{- if not $clouds }}</span>
+<span class="w">      </span><span class="no">{{ fail &quot;failed to decode clouds.yaml&quot; }}</span>
+<span class="w">    </span><span class="no">{{ end -}}</span>
+
+<span class="w">    </span><span class="no">{{- $openstack := index $clouds &quot;clouds&quot; &quot;openstack&quot; -}}</span>
+
+<span class="w">    </span><span class="no">{{- if not (hasKey $openstack &quot;auth&quot;) }}</span>
+<span class="w">      </span><span class="no">{{ fail &quot;auth key not found in openstack config&quot; }}</span>
+<span class="w">    </span><span class="no">{{- end }}</span>
+<span class="w">    </span><span class="no">{{- $auth := index $openstack &quot;auth&quot; -}}</span>
+
+<span class="w">    </span><span class="no">{{- $auth_url := index $auth &quot;auth_url&quot; -}}</span>
+<span class="w">    </span><span class="no">{{- $app_cred_id := index $auth &quot;application_credential_id&quot; -}}</span>
+<span class="w">    </span><span class="no">{{- $app_cred_name := index $auth &quot;application_credential_name&quot; -}}</span>
+<span class="w">    </span><span class="no">{{- $app_cred_secret := index $auth &quot;application_credential_secret&quot; -}}</span>
+
+<span class="w">    </span><span class="no">{{- $network_id := $cluster.status.externalNetwork.id -}}</span>
+<span class="w">    </span><span class="no">{{- $network_name := $cluster.status.externalNetwork.name -}}</span>
+<span class="w">    </span><span class="no">---</span>
+<span class="w">    </span><span class="no">apiVersion: v1</span>
+<span class="w">    </span><span class="no">kind: Secret</span>
+<span class="w">    </span><span class="no">metadata:</span>
+<span class="w">      </span><span class="no">name: openstack-cloud-config</span>
+<span class="w">      </span><span class="no">namespace: kube-system</span>
+<span class="w">    </span><span class="no">type: Opaque</span>
+<span class="w">    </span><span class="no">stringData:</span>
+<span class="w">      </span><span class="no">cloud.conf: |</span>
+<span class="w">        </span><span class="no">[Global]</span>
+<span class="w">        </span><span class="no">auth-url=&quot;{{ $auth_url }}&quot;</span>
+
+<span class="w">        </span><span class="no">{{- if $app_cred_id }}</span>
+<span class="w">        </span><span class="no">application-credential-id=&quot;{{ $app_cred_id }}&quot;</span>
+<span class="w">        </span><span class="no">{{- end }}</span>
+
+<span class="w">        </span><span class="no">{{- if $app_cred_name }}</span>
+<span class="w">        </span><span class="no">application-credential-name=&quot;{{ $app_cred_name }}&quot;</span>
+<span class="w">        </span><span class="no">{{- end }}</span>
+
+<span class="w">        </span><span class="no">{{- if $app_cred_secret }}</span>
+<span class="w">        </span><span class="no">application-credential-secret=&quot;{{ $app_cred_secret }}&quot;</span>
+<span class="w">        </span><span class="no">{{- end }}</span>
+
+<span class="w">        </span><span class="no">{{- if and (not $app_cred_id) (not $app_cred_secret) }}</span>
+<span class="w">        </span><span class="no">username=&quot;{{ index $openstack &quot;username&quot; }}&quot;</span>
+<span class="w">        </span><span class="no">password=&quot;{{ index $openstack &quot;password&quot; }}&quot;</span>
+<span class="w">        </span><span class="no">{{- end }}</span>
+<span class="w">        </span><span class="no">region=&quot;{{ index $openstack &quot;region_name&quot; }}&quot;</span>
+
+<span class="w">        </span><span class="no">[LoadBalancer]</span>
+<span class="w">        </span><span class="no">{{- if $network_id }}</span>
+<span class="w">        </span><span class="no">floating-network-id=&quot;{{ $network_id }}&quot;</span>
+<span class="w">        </span><span class="no">{{- end }}</span>
+
+<span class="w">        </span><span class="no">[Network]</span>
+<span class="w">        </span><span class="no">{{- if $network_name }}</span>
+<span class="w">        </span><span class="no">public-network-name=&quot;{{ $network_name }}&quot;</span>
+<span class="w">        </span><span class="no">{{- end }}</span>
+</code></pre></div>
+<p>Object needs to be named <code>openstack-cluster-identity-resource-template.yaml</code>, <code>OpenStackClusterIdentity</code> object name + <code>-resource-template</code> string suffix.</p>
+<p>Apply the YAML to your cluster:</p>
+<div class="highlight"><pre><span></span><code>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>openstack-cluster-identity-resource-template.yaml
+</code></pre></div>
 </li>
 <li>
 <p>Create Your First Child Cluster</p>
@@ -2263,7 +2348,7 @@ Save this as <code>openstack-cluster-identity-cred.yaml</code>:</p>
 <span class="go">vsphere-standalone-cp-0-1-0     true</span>
 </code></pre></div></p>
 <p>The <code>ClusterDeployment</code> should look something like this:</p>
-<p><div class="highlight"><pre><span></span><code><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">k0rdent.mirantis.com/v1alpha1</span>
+<div class="highlight"><pre><span></span><code><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">k0rdent.mirantis.com/v1alpha1</span>
 <span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ClusterDeployment</span>
 <span class="nt">metadata</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">my-openstack-cluster-deployment</span>
@@ -2272,6 +2357,7 @@ Save this as <code>openstack-cluster-identity-cred.yaml</code>:</p>
 <span class="w">  </span><span class="nt">template</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">openstack-standalone-cp-0-1-0</span>
 <span class="w">  </span><span class="nt">credential</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">openstack-cluster-identity-cred</span>
 <span class="w">  </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">clusterLabels</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{}</span>
 <span class="w">    </span><span class="nt">controlPlaneNumber</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
 <span class="w">    </span><span class="nt">workersNumber</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
 <span class="w">    </span><span class="nt">controlPlane</span><span class="p">:</span>
@@ -2284,13 +2370,20 @@ Save this as <code>openstack-cluster-identity-cred.yaml</code>:</p>
 <span class="w">      </span><span class="nt">image</span><span class="p">:</span>
 <span class="w">        </span><span class="nt">filter</span><span class="p">:</span>
 <span class="w">          </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ubuntu-22.04-x86_64</span>
-<span class="w">    </span><span class="nt">authURL</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;OS_AUTH_URL&gt;</span>
+<span class="w">    </span><span class="nt">externalNetwork</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">filter</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;public&quot;</span>
+<span class="w">    </span><span class="nt">authURL</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${OS_AUTH_URL}</span>
+<span class="w">    </span><span class="nt">identityRef</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;openstack-cloud-config&quot;</span>
+<span class="w">      </span><span class="nt">cloudName</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;openstack&quot;</span>
+<span class="w">      </span><span class="nt">region</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${OS_REGION_NAME}</span>
 </code></pre></div>
-You can adjust <code>flavor</code>, <code>image</code> name, and <code>authURL</code> to match your OpenStack environment. For more information about the configuration options, see the <a href="../template-openstack/">OpenStack Template Parameters Reference</a>.</p>
+<p>You can adjust <code>flavor</code>, <code>image name</code>, <code>region name</code>, and <code>authURL</code> to match your OpenStack environment. For more information about the configuration options, see the <a href="../template-openstack/">OpenStack Template Parameters Reference</a>.</p>
 <p>Apply the YAML to your management cluster:</p>
 <div class="highlight"><pre><span></span><code>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>my-openstack-cluster-deployment.yaml
 </code></pre></div>
-<p>There will be a delay as the cluster finishes provisioning. You can follow the
+<p>This will trigger the provisioning process where k0rdent will create a bunch of OpenStack resources such as OpenStackCluster, OpenStackMachineTemplate, OpenStackMachineDeployment, etc. You can follow the
 provisioning process:</p>
 <div class="highlight"><pre><span></span><code>kubectl<span class="w"> </span>-n<span class="w"> </span>kcm-system<span class="w"> </span>get<span class="w"> </span>clusterdeployment.k0rdent.mirantis.com<span class="w"> </span>my-openstack-cluster-deployment<span class="w"> </span>--watch
 </code></pre></div>
@@ -2302,12 +2395,12 @@ provisioning process:</p>
 <li>
 <p>Cleanup</p>
 <p>To clean up OpenStack resources, delete the managed cluster by deleting the <code>ClusterDeployment</code>:</p>
-<p><div class="highlight"><pre><span></span><code>kubectl<span class="w"> </span>get<span class="w"> </span>ClusterDeployments<span class="w"> </span>-A
+<p><div class="highlight"><pre><span></span><code>kubectl<span class="w"> </span>get<span class="w"> </span>clusterdeployments<span class="w"> </span>-A
 </code></pre></div>
 <div class="highlight"><pre><span></span><code><span class="go">NAMESPACE    NAME                          READY   STATUS</span>
 <span class="go">kcm-system   my-openstack-cluster-deployment   True    ClusterDeployment is ready</span>
 </code></pre></div>
-<div class="highlight"><pre><span></span><code>kubectl<span class="w"> </span>delete<span class="w"> </span>ClusterDeployment<span class="w"> </span>my-openstack-cluster-deployment<span class="w"> </span>-n<span class="w"> </span>kcm-system
+<div class="highlight"><pre><span></span><code>kubectl<span class="w"> </span>delete<span class="w"> </span>clusterdeployments<span class="w"> </span>my-openstack-cluster-deployment<span class="w"> </span>-n<span class="w"> </span>kcm-system
 </code></pre></div>
 <div class="highlight"><pre><span></span><code><span class="go">clusterdeployment.k0rdent.mirantis.com &quot;my-openstack-cluster-deployment&quot; deleted</span>
 </code></pre></div></p>
