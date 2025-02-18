@@ -1636,6 +1636,51 @@ sudo<span class="w"> </span>./aws/install
 <p>The tool recognizes the environment variables you created earlier, so there's no need to login.</p>
 </li>
 <li>
+<p>Check for available IPs</p>
+<p>Because k0rdent has 3 availablilty zone NAT gateways, each cluster needs 3 public IPs. Unfortunately, the default
+<code>EC2-VPC Elastic IPs</code> quota per region is 5, so while you likely won't have issues with a first cluster, if you try to deplay a 
+second to the same region, you are likely to run into issues.  </p>
+<p>You can determine how many elastic IPs are available from the command line:</p>
+<p><div class="highlight"><pre><span></span><code><span class="nv">LIMIT</span><span class="o">=</span><span class="k">$(</span>aws<span class="w"> </span>ec2<span class="w"> </span>describe-account-attributes<span class="w"> </span>--attribute-names<span class="w"> </span>vpc-max-elastic-ips<span class="w"> </span>--query<span class="w"> </span><span class="s1">&#39;AccountAttributes[0].AttributeValues[0].AttributeValue&#39;</span><span class="w"> </span>--output<span class="w"> </span>text<span class="k">)</span>
+<span class="nv">USED</span><span class="o">=</span><span class="k">$(</span>aws<span class="w"> </span>ec2<span class="w"> </span>describe-addresses<span class="w"> </span>--query<span class="w"> </span><span class="s1">&#39;Addresses[*].PublicIp&#39;</span><span class="w"> </span>--output<span class="w"> </span>text<span class="w"> </span><span class="p">|</span><span class="w"> </span>wc<span class="w"> </span>-w<span class="k">)</span>
+<span class="nv">AVAILABLE</span><span class="o">=</span><span class="k">$((</span><span class="nv">LIMIT</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nv">USED</span><span class="k">))</span>
+<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Available Public IPs: </span><span class="nv">$AVAILABLE</span><span class="s2">&quot;</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="go">Available Public IPs: 5</span>
+</code></pre></div></p>
+<p>If you have less than 3 available public IPs, you can request an increase in your quota:</p>
+<div class="highlight"><pre><span></span><code>aws<span class="w"> </span>service-quotas<span class="w"> </span>request-service-quota-increase<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--service-code<span class="w"> </span>ec2<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--quota-code<span class="w"> </span>L-0263D0A3<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--desired-value<span class="w"> </span><span class="m">20</span>
+</code></pre></div>
+<p>You can check on the status of your request:</p>
+<p><div class="highlight"><pre><span></span><code>aws<span class="w"> </span>service-quotas<span class="w"> </span>list-requested-service-quota-change-history<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--service-code<span class="w"> </span>ec2
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="go">{</span>
+<span class="go">    &quot;RequestedQuotas&quot;: [</span>
+<span class="go">        {</span>
+<span class="go">            &quot;Id&quot;: &quot;EXAMPLE_ACCESS_KEY_ID&quot;,</span>
+<span class="go">            &quot;ServiceCode&quot;: &quot;ec2&quot;,</span>
+<span class="go">            &quot;ServiceName&quot;: &quot;Amazon Elastic Compute Cloud (Amazon EC2)&quot;,</span>
+<span class="go">            &quot;QuotaCode&quot;: &quot;L-0263D0A3&quot;,</span>
+<span class="go">            &quot;QuotaName&quot;: &quot;EC2-VPC Elastic IPs&quot;,</span>
+<span class="go">            &quot;DesiredValue&quot;: 20.0,</span>
+<span class="go">            &quot;Status&quot;: &quot;PENDING&quot;,</span>
+<span class="go">            &quot;Created&quot;: &quot;2025-02-09T02:27:01.573000-05:00&quot;,</span>
+<span class="go">            &quot;LastUpdated&quot;: &quot;2025-02-09T02:27:01.956000-05:00&quot;,</span>
+<span class="go">            &quot;Requester&quot;: &quot;{\&quot;accountId\&quot;:\&quot;EXAMPLE_ACCESS_KEY_ID\&quot;,\&quot;callerArn\&quot;:\&quot;arn:aws:iam::EXAMPLE_ACCESS_KEY_ID:user/nchase\&quot;}&quot;,</span>
+<span class="go">            &quot;QuotaArn&quot;: &quot;arn:aws:servicequotas:EXAMPLE_AWS_REGION:EXAMPLE_ACCESS_KEY_ID:ec2/L-0263D0A3&quot;,</span>
+<span class="go">            &quot;GlobalQuota&quot;: false,</span>
+<span class="go">            &quot;Unit&quot;: &quot;None&quot;,</span>
+<span class="go">            &quot;QuotaRequestedAtLevel&quot;: &quot;ACCOUNT&quot;</span>
+<span class="go">        }</span>
+<span class="go">    ]</span>
+<span class="go">}</span>
+</code></pre></div></p>
+</li>
+<li>
 <p>Create the IAM user. </p>
 <p>The actual <code>user-name</code> parameter is arbitrary; you can specify it as anything you like:</p>
 <p><div class="highlight"><pre><span></span><code>aws<span class="w"> </span>iam<span class="w"> </span>create-user<span class="w"> </span>--user-name<span class="w"> </span>k0rdentUser
