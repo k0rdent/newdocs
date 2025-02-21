@@ -2726,7 +2726,7 @@ and apply this example for AWS, or use it as a reference:</p>
 <span class="s">  labels:</span>
 <span class="s">    app.kubernetes.io/name: promxy-operator</span>
 <span class="s">    k0rdent.mirantis.com/promxy-secret-name: kof-mothership-promxy-config</span>
-<span class="s">  name: promxyservergroup-sample</span>
+<span class="s">  name: $REGIONAL_CLUSTER_NAME-metrics</span>
 <span class="s">  namespace: kof</span>
 <span class="s">spec:</span>
 <span class="s">  cluster_name: $REGIONAL_CLUSTER_NAME</span>
@@ -2748,7 +2748,7 @@ and apply this example for AWS, or use it as a reference:</p>
 <span class="s">metadata:</span>
 <span class="s">  labels:</span>
 <span class="s">    app.kubernetes.io/managed-by: Helm</span>
-<span class="s">  name: victoria-logs-regional0</span>
+<span class="s">  name: $REGIONAL_CLUSTER_NAME-logs</span>
 <span class="s">  namespace: kof</span>
 <span class="s">spec:</span>
 <span class="s">  valuesFrom:</span>
