@@ -1969,8 +1969,9 @@ can be <a href="#velero-installation">customized</a> if necessary.</p>
 <ol>
 <li>
 <p>If no <code>velero</code> plugins have been installed as suggested
-   in the <a href="#velero-installation">corresponding section</a>,
-   install it by modifying the <code>Management</code> object:</p>
+   in <a href="#velero-installation">Velero installation</a>,
+   install a plugin that <a href="https://velero.io/docs/v1.15/supported-providers/">supports Object Store</a>
+   by modifying the <code>Management</code> object:</p>
 <div class="highlight"><pre><span></span><code><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">k0rdent.mirantis.com/v1alpha1</span>
 <span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Management</span>
 <span class="nt">metadata</span><span class="p">:</span>
@@ -2294,6 +2295,8 @@ Please consider the <a href="#caveats">restoration caveats</a> section before pr
 <h2 id="caveats-limitations">Caveats / Limitations<a class="headerlink" href="#caveats-limitations" title="Permanent link">#</a></h2>
 <p>The credentials stored in backups can and will get stale,
 so a proper rotation should be considered beforehand.</p>
+<p>Only plugins that <a href="https://velero.io/docs/v1.15/supported-providers/">support Object Store</a>
+can be used to store backups into an object storage.</p>
 <p>All <code>velero</code> caveats and limitations are transitively implied in <code>k0rdent</code>. In particular, that
 means no backup encryption is provided until it is implemented by a <code>velero</code> plugin that supports
 encryption and cloud storage backups.</p>
@@ -2348,17 +2351,16 @@ from the cluster after <code>Backup</code> has been deleted.</p>
 <h2 id="customization">Customization<a class="headerlink" href="#customization" title="Permanent link">#</a></h2>
 <p>This section covers different topics of customization regarding backing up and restoring k0rdent.</p>
 <h3 id="velero-installation">Velero installation<a class="headerlink" href="#velero-installation" title="Permanent link">#</a></h3>
-<p>The Velero helm chart is supplied with the
-<a href="https://vmware-tanzu.github.io/helm-charts/">k0rdent helm chart</a>
-and is enabled by default. There are 2 ways of customizing the chart values:</p>
+<p>The <a href="https://vmware-tanzu.github.io/helm-charts/">Velero helm chart</a> is supplied with the
+k0rdent helm chart and is enabled by default. There are 2 ways of customizing the chart values:</p>
 <ol>
 <li>
 <p>Install using <code>helm</code> and add corresponding parameters to the <code>helm install</code> command.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>
-Only a plugin is required during restoration; the other parameters
-are optional.</p>
+Only a plugin that <a href="https://velero.io/docs/v1.15/supported-providers/">supports Object Store</a>
+is required during restoration; the other parameters are optional.</p>
 </div>
 <p>For example, this command installs k0rdent via <code>helm install</code> with a configured plugin, <code>BackupStorageLocation</code>
 and propagated credentials:</p>
@@ -2366,7 +2368,7 @@ and propagated credentials:</p>
 <span class="w"> </span>--version<span class="w"> </span>&lt;version&gt;<span class="w"> </span><span class="se">\</span>
 <span class="w"> </span>--create-namespace<span class="w"> </span><span class="se">\</span>
 <span class="w"> </span>--namespace<span class="w"> </span>kcm-system<span class="w"> </span><span class="se">\</span>
-<span class="w"> </span>--set-file<span class="w"> </span>velero.credentials.secretContents.cloud<span class="o">=</span>&lt;FULL<span class="w"> </span>PATH<span class="w"> </span>TO<span class="w"> </span>FILE&gt;<span class="w"> </span><span class="se">\</span>
+<span class="w"> </span>--set-file<span class="w"> </span>velero.credentials.secretContents.cloud<span class="o">=</span>&lt;full-path-to-file&gt;<span class="w"> </span><span class="se">\</span>
 <span class="w"> </span>--set<span class="w"> </span>velero.credentials.useSecret<span class="o">=</span><span class="nb">true</span><span class="w"> </span><span class="se">\</span>
 <span class="w"> </span>--set<span class="w"> </span>velero.backupsEnabled<span class="o">=</span><span class="nb">true</span><span class="w"> </span><span class="se">\</span>
 <span class="w"> </span>--set<span class="w"> </span>velero.configuration.backupStorageLocation<span class="o">[</span><span class="m">0</span><span class="o">]</span>.name<span class="o">=</span>&lt;backup-storage-location-name&gt;<span class="w"> </span><span class="se">\</span>
@@ -2384,8 +2386,8 @@ and propagated credentials:</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>
-Only a plugin is required during restoration; the other parameters
-are optional.</p>
+Only a plugin that <a href="https://velero.io/docs/v1.15/supported-providers/">supports Object Store</a>
+is required during restoration; the other parameters are optional.</p>
 </div>
 <p>For example, this is a <code>Management</code> object with a configured plugin and enabled metrics:</p>
 <div class="highlight"><pre><span></span><code><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">k0rdent.mirantis.com/v1alpha1</span>
